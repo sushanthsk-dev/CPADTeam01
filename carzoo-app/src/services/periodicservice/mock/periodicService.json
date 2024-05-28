@@ -1,0 +1,35 @@
+{
+  "results": [{
+      "id":"4573",
+      "title": "Basic Service",
+      "image_cover": "../../../../assets/icon.png",
+      "price": 2099,
+      "features": [
+        "4 hours takes",
+        "Recommended for every 4000km / 3 Months",
+        "Includes 7 services",
+      ]
+    },
+    {
+      "id":"4574",
+      "title": "Standard Service",
+      "image_cover": "../../../../assets/icon.png",
+      "price": 6099,
+      "features": [
+        "4 hours takes",
+        "Recommended for every 10000 km / 6 Months",
+        "Includes 10 services",
+      ],
+    },
+    {"id":"4575",
+      "title": "Comprehensive Service",
+      "image_cover": "../../../../assets/icon.png",
+      "price": 10099,
+      "features": [
+        "5 hours takes",
+        "Recommended for every 25000Km / 10 Months",
+        "Includes 13 services",
+      ],
+    }
+  ]
+};
