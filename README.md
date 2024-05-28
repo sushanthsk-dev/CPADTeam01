@@ -29,12 +29,8 @@ CarZoo is a comprehensive mobile application designed to simplify car maintenanc
 - **Emission Certificates**: Keep track of your vehicle's emission compliance certificates and receive reminders for renewals.
 - **Easy Access**: Access all your important documents anytime, anywhere from within the app.
 
-## Contributing
-
-We welcome contributions from the community to enhance CarZoo's functionality and user experience. Please refer to our [Contributing Guidelines](CONTRIBUTING.md) for more information.
-
 ## License
 
-CarZoo is released under the [MIT License](LICENSE).
+Carzoo is released under the [MIT License](LICENSE).
 
 ---
