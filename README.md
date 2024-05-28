@@ -7,11 +7,13 @@ BITS ID     | Name
 2021hs70006 | Shruti Dhanuka
 2021hs70024 | Sushanth 
 
-# CarZoo Mobile App
+# Carzoo Mobile App 📱
+![logo](https://github.com/SWENGG4Y2023/CPADTeam01/assets/73495117/f0f7cfc7-6c9c-4c9b-9a43-1a2b4ad05ae1)
+
 
 ## Overview
 
-CarZoo is a comprehensive mobile application designed to simplify car maintenance and management for vehicle owners. With a focus on ease of use and efficiency, CarZoo offers a suite of features that help users stay on top of their car's periodic services, find nearby mechanics, and maintain essential documents related to insurance and emission compliance.
+Carzoo is a comprehensive mobile application designed to simplify car maintenance and management for vehicle owners. With a focus on ease of use and efficiency, CarZoo offers a suite of features that help users stay on top of their car's periodic services, find nearby mechanics, and maintain essential documents related to insurance and emission compliance.
 
 ## Features
 
