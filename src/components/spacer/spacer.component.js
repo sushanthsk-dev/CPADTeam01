@@ -9,6 +9,7 @@ const sizeVariant = {
   s_small: -1,
   m_medium: -2,
   larger: 6,
+  four_large: 4,
   l_larger: 5,
 };
 

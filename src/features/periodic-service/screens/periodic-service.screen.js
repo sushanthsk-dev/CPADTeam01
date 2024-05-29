@@ -27,13 +27,14 @@ const CoverImage = styled.Image`
 `;
 const ScrollViewContainer = styled(ScrollView)`
   background-color: #fff;
+  margin-top: 56px;
 `;
 export const PeriodicServiceScreen = ({ navigation }) => {
   const { periodicServicePlans } = useContext(PeriodicServiceContext);
   const { cart } = useContext(CartContext);
   return (
     <SafeArea>
-      <Header navigation={navigation} toLeft={true} />
+      <Header navigation={navigation} toLeft={true} title="Periodic Service" />
       {!!cart.id && <CartFloat navigation={navigation} />}
       <ScrollViewContainer>
         <ServiceImageContainer>

@@ -6,6 +6,15 @@ import { Text } from "../../components/typography/text.component";
 import { SafeArea } from "../../components/utility/safe-area.component";
 import { HomeNavigator } from "./home.navigator";
 import { CartScreen } from "../../features/cart/screens/cart.screen";
+import { ProfileNavigator } from "./profile.navigator";
+import { DocumentNavigator } from "./document.navigator";
+import { PeriodicServiceContextProvider } from "../../services/periodicservice/periodicservice.context";
+import { LocationContextProvider } from "../../services/location/location.context";
+import { ProfileContextProvider } from "../../services/profile-details/profile.context";
+import { AddressContextProvider } from "../../services/address/address.context";
+import { CartContextProvider } from "../../services/Cart/cart.context";
+import { DateContextProvider } from "../../services/date-time/date.context";
+import { TimeContextProvider } from "../../services/date-time/time.context";
 
 const Tab = createBottomTabNavigator();
 const TAB_ICON = {
@@ -25,38 +34,57 @@ const hideScreenArray = [
   "PeriodicServiceScreen",
   "PeriodicServiceDetails",
   "CartScreenInside",
+  "DocumentScreen",
+  "AddDocumentScreen",
+  "CheckoutScreen",
+  "OrderSummary",
+  "ProfileScreen",
+  "MyProfileScreen",
+  "MyOrderScreen",
+  "MapScreen",
+  "CartScreenInside",
 ];
-const ProfileScreen = () => (
-  <SafeArea>
-    <Text>Profile Screen Screen</Text>
-  </SafeArea>
-);
 
 export const AppNavigator = () => {
   return (
-    <Tab.Navigator
-      screenOptions={screenOptions}
-      tabBarOptions={{
-        activeTintColor: "#6200EE",
-        inactiveTintColor: "#262626",
-        showLabel: false,
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeNavigator}
-        options={({ route }) => ({
-          tabBarVisible: ((routes) => {
-            const routeName = getFocusedRouteNameFromRoute(routes) ?? "";
-             if (hideScreenArray.includes(routeName)) {
-              return false;
-            }
-            return true;
-          })(route),
-        })}
-      />
-      {/* <Tab.Screen name="Cart" component={CartScreen} /> */}
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-    </Tab.Navigator>
+    <PeriodicServiceContextProvider>
+      <LocationContextProvider>
+        <ProfileContextProvider>
+          <AddressContextProvider>
+            <CartContextProvider>
+              <DateContextProvider>
+                <TimeContextProvider>
+                  <Tab.Navigator
+                    screenOptions={screenOptions}
+                    tabBarOptions={{
+                      activeTintColor: "#6200EE",
+                      inactiveTintColor: "#262626",
+                      showLabel: false,
+                    }}
+                  >
+                    <Tab.Screen
+                      name="Home"
+                      component={HomeNavigator}
+                      options={({ route }) => ({
+                        tabBarVisible: ((routes) => {
+                          const routeName =
+                            getFocusedRouteNameFromRoute(routes) ?? "";
+                          if (hideScreenArray.includes(routeName)) {
+                            return false;
+                          }
+                          return true;
+                        })(route),
+                      })}
+                    />
+                    {/* <Tab.Screen name="Cart" component={CartScreen} /> */}
+                    <Tab.Screen name="Profile" component={ProfileNavigator} />
+                  </Tab.Navigator>
+                </TimeContextProvider>
+              </DateContextProvider>
+            </CartContextProvider>
+          </AddressContextProvider>
+        </ProfileContextProvider>
+      </LocationContextProvider>
+    </PeriodicServiceContextProvider>
   );
 };

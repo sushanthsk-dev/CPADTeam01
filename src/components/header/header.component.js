@@ -7,9 +7,10 @@ import { Text } from "../typography/text.component";
 import { Spacer } from "../spacer/spacer.component";
 
 const HeaderContainer = styled.View`
-  position: relative;
+  position: absolute;
   width: 100%;
-  height: 50px;
+  z-index: 888;
+  height: 56px;
   background-color: ${(props) => props.theme.colors.brand.primary};
   flex-direction: row;
   align-items: center;
@@ -22,11 +23,7 @@ const HeaderText = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.title};
   color: ${(props) => props.theme.colors.bg.primary};
 `;
-export const Header = ({
-  title = "Periodic Service",
-  toLeft = false,
-  navigation,
-}) => {
+export const Header = ({ title = "", toLeft = false, navigation }) => {
   return (
     <HeaderContainer toLeft={toLeft}>
       {!!toLeft && (

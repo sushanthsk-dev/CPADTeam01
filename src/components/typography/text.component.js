@@ -29,6 +29,10 @@ const body = (theme) => `
     font-size:${theme.fontSizes.body}
     font-weight:${theme.fontWeights.medium}
 `;
+const subHead = (theme) => `
+    font-size:${theme.fontSizes.body}
+    font-weight:${theme.fontWeights.bolder}
+`;
 const hint = (theme) => `
     font-size:${theme.fontSizes.hint}
 `;
@@ -36,10 +40,20 @@ const error = (theme) => `
     font-size:${theme.fontSizes.error}
     color: ${theme.colors.text.error}
 `;
+const success = (theme) => `
+    font-size:${theme.fontSizes.body}
+    font-weight:${theme.fontWeights.bold}
+    color: ${theme.colors.text.success}
+`;
 const caption = (theme) => `
     font-size:${theme.fontSizes.caption}
     font-weight:${theme.fontWeights.bold}
     color: ${theme.colors.text.primary};
+`;
+const light_text = (theme) => `
+font-size:${theme.fontSizes.button}
+font-weight:${theme.fontWeights.bolder}
+color: ${theme.colors.text.secondary};
 `;
 const label = (theme) => `
     font-family:${theme.fonts.heading};
@@ -53,7 +67,10 @@ const variants = {
   subTitle,
   checkoutTitle,
   label,
+  subHead,
   caption,
+  success,
+  light_text,
   error,
   hint,
 };

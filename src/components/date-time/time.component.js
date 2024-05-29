@@ -6,47 +6,43 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
-import { DateContext } from "../../services/date-time/dateTime.context";
+import { TimeContext } from "../../services/date-time/time.context";
+import { DateContext } from "../../services/date-time/date.context";
 
-const DateContainer = styled.View`
+const TimeContainer = styled.View`
   border: 2px solid ${(props) => props.theme.colors.ui.secondary};
-  width: 54px;
+  width: 74px;
   border-radius: 4px;
   padding: ${(props) => props.theme.space[1]};
-  margin: ${(props) => props.theme.space[2]};
+  margin: ${(props) => props.theme.space[1]};
   align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
 `;
-const FocusDateContainer = styled.View`
+const FocusTimeContainer = styled.View`
   border: 2px solid ${(props) => props.theme.colors.brand.primary};
-  width: 54px;
+  width: 74px;
   border-radius: 4px;
   padding: ${(props) => props.theme.space[1]};
-  margin: ${(props) => props.theme.space[2]};
+  margin: ${(props) => props.theme.space[1]};
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
+const TimeText = styled(Text)`
+  text-align: center;
+  margin: auto;
   align-items: center;
 `;
-// const DateText = styled.(Text)`
 
-// `;
-export const DateView = ({ dateData }) => {
-  const { date, addDate, removeDate } = React.useContext(DateContext);
-  const isFocused = dateData.id === date.id ? true : false;
-  console.log(isFocused);
-  console.log(date);
-  return (
-    <TouchableOpacity
-      onPress={() => (!isFocused ? addDate(dateData) : removeDate(dateData))}
-    >
-      {isFocused === true ? (
-        <FocusDateContainer>
-          <Text variant="label">{dateData.dateDay}</Text>
-          <Text>{dateData.weekDay}</Text>
-        </FocusDateContainer>
-      ) : (
-        <DateContainer>
-          <Text variant="label">{dateData.dateDay}</Text>
-          <Text>{dateData.weekDay}</Text>
-        </DateContainer>
-      )}
-    </TouchableOpacity>
+export const TimeView = ({ timeData, isFocused }) => {
+  return isFocused === true ? (
+    <FocusTimeContainer>
+      <TimeText>{timeData}</TimeText>
+    </FocusTimeContainer>
+  ) : (
+    <TimeContainer>
+      <TimeText>{timeData}</TimeText>
+    </TimeContainer>
   );
 };

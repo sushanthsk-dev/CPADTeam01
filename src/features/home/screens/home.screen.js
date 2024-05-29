@@ -1,11 +1,8 @@
 import React from "react";
-import { Searchbar } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
-import { Spacer } from "../../../components/spacer/spacer.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { FeatureCard } from "../components/home.component";
-import { Text } from "../../../components/typography/text.component";
 
 const View = styled.View`
   width: 100%;
@@ -14,13 +11,16 @@ const View = styled.View`
   margin: auto;
   justify-content: center;
 `;
-
+const LogoImageContainer = styled.Image`
+  width: 241px;
+  height: 50px;
+  transform: scale(0.6);
+  margin: 6px auto;
+`;
 export const HomeScreen = ({ navigation }) => {
   return (
     <SafeArea>
-      <Spacer>
-        <Searchbar icon="pin" value="Moodbidri, Mangalore" />
-      </Spacer>
+      <LogoImageContainer source={require("../../../../assets/logo1.png")} />
 
       <View>
         <TouchableOpacity
@@ -29,10 +29,10 @@ export const HomeScreen = ({ navigation }) => {
           <FeatureCard title="Periodic Service" />
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("MapScreen")}>
           <FeatureCard title="Mechanic Nearby" />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("DocumentScreen")}>
           <FeatureCard title="Insurance & Emission Test Document" />
         </TouchableOpacity>
       </View>

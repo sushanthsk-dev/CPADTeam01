@@ -35,6 +35,8 @@ class Carousel extends React.Component {
   };
   componentWillUnmount = () => {
     clearInterval();
+    this.setState({ selectedIndex: 0 });
+    this.scrollRef = 0;
   };
   setSelectedIndex = (event) => {
     const contentOffset = event.nativeEvent.contentOffset;

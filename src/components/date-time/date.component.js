@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
-import { DateContext } from "../../services/date-time/dateTime.context";
+import { DateContext } from "../../services/date-time/date.context";
 
 const DateContainer = styled.View`
   border: 2px solid ${(props) => props.theme.colors.ui.secondary};
@@ -24,29 +24,18 @@ const FocusDateContainer = styled.View`
   margin: ${(props) => props.theme.space[2]};
   align-items: center;
 `;
-// const DateText = styled.(Text)`
 
-// `;
-export const DateView = ({ dateData }) => {
-  const { date, addDate, removeDate } = React.useContext(DateContext);
-  const isFocused = dateData.id === date.id ? true : false;
-  console.log(isFocused);
-  console.log(date);
-  return (
-    <TouchableOpacity
-      onPress={() => (!isFocused ? addDate(dateData) : removeDate(dateData))}
-    >
-      {isFocused === true ? (
-        <FocusDateContainer>
-          <Text variant="label">{dateData.dateDay}</Text>
-          <Text>{dateData.weekDay}</Text>
-        </FocusDateContainer>
-      ) : (
-        <DateContainer>
-          <Text variant="label">{dateData.dateDay}</Text>
-          <Text>{dateData.weekDay}</Text>
-        </DateContainer>
-      )}
-    </TouchableOpacity>
+export const DateView = ({ dateData, isFocused }) => {
+  const dateArray = dateData.split(" ");
+  return isFocused === true ? (
+    <FocusDateContainer>
+      <Text variant="label">{dateArray[2]}</Text>
+      <Text>{dateArray[0]}</Text>
+    </FocusDateContainer>
+  ) : (
+    <DateContainer>
+      <Text variant="label">{dateArray[2]}</Text>
+      <Text>{dateArray[0]}</Text>
+    </DateContainer>
   );
 };
