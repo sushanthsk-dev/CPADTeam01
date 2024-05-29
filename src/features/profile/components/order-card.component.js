@@ -20,11 +20,11 @@ export const OrderCard = ({ orderDetails }) => {
   return (
     <OrderCardContainer>
       <Section>
-        <Text variant="title">Basic Service</Text>
-        <Text variant="caption">ID : CA15964</Text>
+        <Text variant="title">{orderDetails.servicePlan}</Text>
+        <Text variant="caption">{`ID : ${orderDetails.orderId}`}</Text>
       </Section>
       <Spacer position="left" size="medium">
-        <Text variant="light_text">Onprocessing</Text>
+        <Text variant="light_text">{orderDetails.orderStatus}</Text>
       </Spacer>
     </OrderCardContainer>
   );

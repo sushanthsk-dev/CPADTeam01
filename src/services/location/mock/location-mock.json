@@ -1,27 +1,18 @@
 {
   "results": [{
       "name": "Sachin",
-      "coordinate": {
-        "latitude": 13.077680131725623,
-        "longitude": 75.00013064593077,
-      },
+      "coordinate": [75.00013064593077,13.077680131725623],
       "photo": "https://everydaynutrition.co.uk/wp-content/uploads/2015/01/default-user-avatar-300x300.png"
     },
     {
       "name": "Virat",
-      "coordinate": {
-        "latitude": 13.074863359108228,
-        "longitude": 74.98992953449488,
-      },
+      "coordinate": [74.98992953449488,13.074863359108228],
       "photo": "https://everydaynutrition.co.uk/wp-content/uploads/2015/01/default-user-avatar-300x300.png"
 
     },
     {
       "name": "ROhith",
-      "coordinate": {
-        "latitude": 13.086114581220595,
-        "longitude": 75.0021443143487,
-      },
+      "coordinate": [74.0021443143487,13.086114581220595],
       "photo": "https://everydaynutrition.co.uk/wp-content/uploads/2015/01/default-user-avatar-300x300.png"
     },
   ],

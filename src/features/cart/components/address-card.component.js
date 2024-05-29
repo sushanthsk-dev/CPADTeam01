@@ -3,6 +3,7 @@ import styled from "styled-components/native";
 import { Text } from "../../../components/typography/text.component";
 import { TouchableOpacity, View } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
+import { Spacer } from "../../../components/spacer/spacer.component";
 
 const AddressCardContainer = styled.View`
   background-color: ${(props) => props.theme.colors.ui.tertiary};
@@ -17,19 +18,36 @@ const EditButton = styled(TouchableOpacity)`
   top: 10px;
   z-index: 666;
 `;
-export const AddressCard = ({ navigation, address }) => {
+
+const Phoneno = styled.View`
+  flex-direction: row;
+`;
+
+export const AddressCard = ({ navigation, address = {}, edit = true }) => {
+
   return (
     <AddressCardContainer>
-      <EditButton>
-        <EvilIcons
-          name="pencil"
-          size={28}
-          color="green"
-          onPress={() => navigation.navigate("AddressScreen")}
-        />
-      </EditButton>
+      {!!edit && (
+        <EditButton>
+          <EvilIcons
+            name="pencil"
+            size={28}
+            color="green"
+            onPress={() => navigation.navigate("AddressScreen")}
+          />
+        </EditButton>
+      )}
+      <Spacer position="bottom">
+        <Text variant="checkoutTitle">Virat</Text>
+      </Spacer>
       <Text>{address.address.trim()}</Text>
       <Text>{`${address.city} ${address.pincode}, ${address.state}`}</Text>
+      <Spacer position="top">
+        <Phoneno>
+          <Text variant="subHead">Phone no: </Text>
+          <Text variant="body">{address.phoneno}</Text>
+        </Phoneno>
+      </Spacer>
     </AddressCardContainer>
   );
 };

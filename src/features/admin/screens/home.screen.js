@@ -23,14 +23,25 @@ export const AdminScreen = ({ navigation }) => {
       <LogoImageContainer source={require("../../../../assets/logo1.png")} />
 
       <View>
-        <TouchableOpacity onPress={() => navigation.navigate("AgentScreen")}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("ManageProfileScreen", { name: "agent" })
+          }
+        >
           <FeatureCard title="Manage Agent" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate("MechanicScreen")}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("ManageProfileScreen", { name: "mechanic" })
+          }
+        >
           <FeatureCard title="Manage Mechanic" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("OrderScreen")}>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate("OrderListScreen")}
+        >
           <FeatureCard title="Manage Orders" />
         </TouchableOpacity>
       </View>

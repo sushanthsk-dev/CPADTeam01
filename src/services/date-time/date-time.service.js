@@ -16,8 +16,8 @@ export const getTime = (date) => {
   const selectedDate = new Date(date);
   const timeArray = [
     "9-10AM",
-    "10-11PM",
-    "11-12PM",
+    "10-11AM",
+    "11-12PM",  
     "12-1PM",
     "2-3PM",
     "3-4PM",

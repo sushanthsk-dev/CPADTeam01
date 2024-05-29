@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View, BackHandler } from "react-native";
 import { Button } from "react-native-paper";
+
 import { FontAwesome } from "@expo/vector-icons";
+import axios from "axios";
 import { DateView } from "../../../components/date-time/date.component";
 import { Header } from "../../../components/header/header.component";
 import { Text } from "../../../components/typography/text.component";
@@ -17,6 +19,8 @@ import { TimeContext } from "../../../services/date-time/time.context";
 import { AddressCard } from "../components/address-card.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { AddressContext } from "../../../services/address/address.context";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
+import { IPADDRESS } from "../../../utils/env";
 
 const CheckoutContainer = styled.View``;
 const DateTimeContainer = styled.View``;
@@ -68,6 +72,8 @@ export const CheckoutScreen = ({ navigation, route }) => {
   const [dateError, setDateError] = useState(false);
   const [timeError, setTimeError] = useState(false);
   const [addressError, setAddressError] = useState(false);
+  const [disable, setDisable] = useState(false);
+  const { headerToken, user } = React.useContext(AuthenticationContext);
   const { date, addDate, removeDate } = React.useContext(DateContext);
 
   const { time, addTime, removeTime } = React.useContext(TimeContext);
@@ -88,7 +94,7 @@ export const CheckoutScreen = ({ navigation, route }) => {
     const timeData = getTime(dateTime);
     setTimes(timeData);
   };
-  const placeOrder = () => {
+  const placeOrder = async () => {
     setDateError(!pickupTime.date.toString() ? true : false);
     setTimeError(!pickupTime.time.toString() ? true : false);
     setAddressError(!address ? true : false);
@@ -99,14 +105,44 @@ export const CheckoutScreen = ({ navigation, route }) => {
     if (!address) {
       return null;
     }
-    setTimeout(() => {
-      navigation.navigate("OrderScreen");
-    }, 500);
-    return console.log("Order LIST", pickupTime, address);
+
+    try {
+      setDisable(true);
+      const res = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${headerToken}` },
+        url: `${IPADDRESS}/api/v1/booking/checkout-session`,
+        data: {
+          price: servicePlan.price,
+          serviceId: servicePlan.id,
+          pickupDateTime: pickupTime,
+          address: address,
+          phoneno: address.phoneno,
+          carDetails: user.myCar,
+        },
+      });
+      console.log(res.data);
+      if (res.data.status === "success") {
+        setTimeout(() => {
+          setDisable(false);
+          removeDate(null);
+          removeTime([]);
+        }, 100);
+        navigation.navigate("OrderScreen", { orderId: res.data.data._id });
+      }
+    } catch (e) {
+      console.log(e.response.data.message);
+      setDisable(false);
+    }
   };
   const ScrollViewContainer = styled(ScrollView)`
-    margin-top: 56px;
+    margin-top: 70px;
   `;
+
+  const handleBackButtonClick = () => {
+    navigation.popToTop();
+    return true;
+  };
 
   React.useEffect(() => {
     setData();
@@ -116,6 +152,15 @@ export const CheckoutScreen = ({ navigation, route }) => {
     setPickupTime({ date: date, time: time });
   }, [date, time]);
 
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        "hardwareBackPress",
+        handleBackButtonClick
+      );
+    };
+  }, []);
   return (
     <SafeArea>
       <Header title="Checkout" toLeft={true} navigation={navigation} />
@@ -224,6 +269,7 @@ export const CheckoutScreen = ({ navigation, route }) => {
           Cancel
         </CancelButton>
         <Button
+          disabled={disable}
           mode="contained"
           labelStyle={{ fontSize: 16 }}
           onPress={() => placeOrder()}

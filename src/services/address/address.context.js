@@ -1,51 +1,80 @@
-import React, { createContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useEffect, useContext, useState } from "react";
+import axios from "axios";
+import { AuthenticationContext } from "../authentication/authentication.context";
+import { IPADDRESS } from "../../utils/env";
 
 export const AddressContext = createContext();
 
 export const AddressContextProvider = ({ children }) => {
+  const { headerToken, user } = useContext(AuthenticationContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [address, setAddress] = useState(null);
-  const saveAddress = async (value) => {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem("@address", jsonValue);
-    } catch (e) {
-      console.log("Error while saving ", e);
-    }
-  };
 
+  const saveAddress = (addrss) => {
+    setAddress(address);
+  };
   const loadAddress = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem("@address");
-      if (jsonValue !== null) {
-        setAddress(JSON.parse(jsonValue));
-      }
-    } catch (error) {
-      console.log("Error while loading ", e);
+      console.log("Header", headerToken);
+      const url =
+        user.role === "user"
+          ? `${IPADDRESS}/api/v1/users/me`
+          : `${IPADDRESS}/api/v1/admin/me`;
+      const res = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${headerToken}` },
+        url: url,
+      });
+      setAddress({
+        ...res.data.data.doc.address,
+        phoneno: res.data.data.doc.phoneno,
+      });
+    } catch (e) {
+      console.log("JWT", e.response.data.message);
+      setError(e.response.data.message);
     }
   };
 
-  const add = (addrss) => {
+  const add = async (addrss) => {
     setIsLoading(true);
-    setTimeout(() => {
-      setAddress(addrss);
+    try {
+      const res = await axios({
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${headerToken}` },
+        url: `${IPADDRESS}/api/v1/users/updateMe`,
+        data: {
+          phoneno: addrss.phoneno,
+          address: addrss,
+        },
+      });
+      if (res.data.status === "success") {
+        setAddress({
+          ...res.data.data.updatedUser.address,
+          phoneno: res.data.data.updatedUser.phoneno,
+        });
+
+        setIsLoading(false);
+        return res.data.status;
+      }
       setIsLoading(false);
-    }, 500);
+    } catch (e) {
+      setError(e.response.data.message);
+      setIsLoading(false);
+    }
   };
 
-  const remove = () => {
-    setAddress(null);
-  };
+  const remove = () => {};
 
   useEffect(() => {
     setIsLoading(true);
     loadAddress();
+    console.log(address);
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    saveAddress(address);
+    setAddress(address);
   }, [address]);
 
   return (
@@ -53,6 +82,9 @@ export const AddressContextProvider = ({ children }) => {
       value={{
         address,
         addAddress: add,
+        error,
+        setAddress,
+        setError,
         removeAddress: remove,
         isLoading: isLoading,
       }}

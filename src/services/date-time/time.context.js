@@ -14,6 +14,10 @@ export const TimeContextProvider = ({ children }) => {
     if (selectedTime === time) {
       setTime([]);
     }
+
+    if (!selectedTime) {
+      setTime([]);
+    }
   };
   useEffect(() => {
     setTime([]);

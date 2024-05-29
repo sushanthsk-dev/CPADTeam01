@@ -10,7 +10,7 @@ import {
   InsuranceDocumentCard,
 } from "../components/document-card.component";
 const DocumentContainer = styled.View`
-  margin-top: 56px;
+  margin-top: 70px;
 `;
 
 const Card = styled.View`

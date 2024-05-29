@@ -14,7 +14,7 @@ import { validate } from "validate.js";
 import { colors } from "../../../infrastructure/theme/colors";
 
 const CartContainer = styled.View`
-  margin-top: 56px;
+  margin-top: 70px;
   width: 100%;
   height: 100%;
 `;
@@ -44,7 +44,7 @@ const SubmitButton = styled(Button)`
   justify-content: center;
 `;
 export const CartScreen = ({ route, navigation }) => {
-  const [pincode, setPincode] = useState(null);
+  const [pincode, setPincode] = useState("574227");
   const [disable, setDisable] = useState(true);
   const [successText, setSuccessText] = useState(null);
   const [pincodeError, setPincodeError] = useState(null);
@@ -63,6 +63,7 @@ export const CartScreen = ({ route, navigation }) => {
       return setPincodeError("Enter the correct pincode format");
     }
     if (pincode != 574227) {
+      setDisable(true);
       return setPincodeError(
         "Sorry the service is not available in the entered pincode"
       );
@@ -106,6 +107,7 @@ export const CartScreen = ({ route, navigation }) => {
                 label="Enter pincode"
                 onChangeText={(t) => setPincode(t)}
                 value={pincode}
+                maxLength={6}
               />
               <SubmitButton mode="contained" onPress={() => onSubmit()}>
                 Check
@@ -130,11 +132,16 @@ export const CartScreen = ({ route, navigation }) => {
           </CartContainer>
           <CheckoutButton
             disabled={disable}
-            onPress={() =>
-              navigation.navigate("CheckoutScreen", {
-                servicePlan: servicePlan,
-              })
-            }
+            onPress={() => {
+              console.log("HE", typeof pincode);
+              if (parseInt(pincode) === 574227) {
+                navigation.navigate("CheckoutScreen", {
+                  servicePlan: servicePlan,
+                });
+              } else {
+                onSubmit();
+              }
+            }}
           >
             Go to Checkout
           </CheckoutButton>

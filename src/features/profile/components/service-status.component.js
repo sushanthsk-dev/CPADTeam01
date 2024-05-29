@@ -1,4 +1,5 @@
 import React from "react";
+import { View } from "react-native";
 import styled from "styled-components/native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "../../../components/typography/text.component";
@@ -16,7 +17,7 @@ const StatusCard = styled.View`
 `;
 
 const StraightLine = styled.View`
-  width: 62px;
+  width: 64px;
   height: 5px;
   border-radius: 2px;
   background-color: ${({ marked, theme }) =>
@@ -24,20 +25,23 @@ const StraightLine = styled.View`
   margin: ${(props) => props.theme.space[1]};
 `;
 
+const StatusView = styled.View`
+  align-items: center;
+  flex-direction: row;
+`;
 const SpacerView = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
-export const ServiceStatus = () => {
+export const ServiceStatus = ({ orderStatus = "Ordered" }) => {
   const status = ["Ordered", "Pickedup", "Servicing", "Deliveried"];
-  const currentStatus = status.indexOf("Pickedup");
+  const currentStatus = status.indexOf(orderStatus);
 
-  // if index < currentStatus then color it
   return (
     <ServiceStatusContainer>
       <StatusCard>
         {status.map((s, i) => (
-          <>
+          <StatusView key={i + 10}>
             <FontAwesome
               key={i}
               name="circle"
@@ -50,7 +54,7 @@ export const ServiceStatus = () => {
                 marked={i < currentStatus ? true : false}
               />
             )}
-          </>
+          </StatusView>
         ))}
       </StatusCard>
       <SpacerView>
@@ -63,8 +67,6 @@ export const ServiceStatus = () => {
         </Spacer>
         <Text variant="caption">Deliveried</Text>
       </SpacerView>
-
-
     </ServiceStatusContainer>
   );
 };

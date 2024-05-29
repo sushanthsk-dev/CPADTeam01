@@ -3,11 +3,14 @@ import styled from "styled-components/native";
 import { View, ScrollView, KeyboardAvoidingView } from "react-native";
 import { Button, ActivityIndicator, Colors } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
+import { IPADDRESS } from "../../../utils/env";
 import { Header } from "../../../components/header/header.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { InputController } from "../../../components/form-control/input-control.component";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 import { AddressContext } from "../../../services/address/address.context";
 
 const AddressContainer = styled.View`
@@ -28,7 +31,9 @@ const AddressButton = styled(Button)`
 `;
 
 export const AddressScreen = ({ navigation }) => {
-  const { address, addAddress, isLoading } = useContext(AddressContext);
+  const [loading, setloading] = useState(false);
+  const { address, addAddress, isLoading, setAddress, error, setError } =
+    useContext(AddressContext);
   const {
     register,
     setPlaceValue,
@@ -38,19 +43,24 @@ export const AddressScreen = ({ navigation }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      address: address !== null ? address.address : "",
-      city: address !== null ? address.city : "",
-      pincode: address !== null ? address.pincode : "",
-      state: address !== null ? address.state : "",
-      phoneno: address !== null ? address.phoneno : "",
+      address: address ? address.address : "",
+      city: address ? address.city : "",
+      pincode: address ? address.pincode : "",
+      state: address ? address.state : "",
+      phoneno: address ? address.phoneno.toString() : "",
     },
   });
-  const onSubmit = (data) => {
-    addAddress(data);
-    setTimeout(() => {
-      navigation.navigate("CheckoutScreen");
-    }, 100);
+
+  const { headerToken } = useContext(AuthenticationContext);
+  const onSubmit = async (data) => {
+    //try 3
+    const res = await addAddress(data);
+    console.log(res);
+    if (res === "success") {
+      navigation.goBack();
+    }
   };
+
   return (
     <SafeArea>
       <Header title="Manage Address" toLeft={true} navigation={navigation} />
@@ -77,6 +87,8 @@ export const AddressScreen = ({ navigation }) => {
                   label="Pincode(Required)*"
                   rules={{ required: true }}
                   name="pincode"
+                  readOnly={true}
+                  defaultValue={574227}
                   divide={true}
                   text={false}
                   control={control}
@@ -117,6 +129,7 @@ export const AddressScreen = ({ navigation }) => {
                 divide={false}
                 text={false}
                 control={control}
+                maxLength={10}
               />
               {errors.phoneno && (
                 <Text variant="error">Phone number is required</Text>

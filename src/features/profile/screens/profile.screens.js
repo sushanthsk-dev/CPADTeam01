@@ -7,6 +7,7 @@ import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { ProfilePhotoContainer } from "../components/profile-photo-container.component";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 
 const ProfileContainer = styled.View`
   height: 100%;
@@ -47,11 +48,13 @@ const ProfileFeatureList = ({ title }) => (
 );
 
 export const ProfileScreen = ({ navigation }) => {
+  const { user, onLogout } = React.useContext(AuthenticationContext);
+
   return (
     <SafeArea>
       <ProfileContainer>
         <ProfilePhotoContainer />
-        <Text>Hello WOrld</Text>
+        <Text>{user.name}</Text>
         <ProfileFeaturesContainer>
           <TouchableOpacity
             onPress={() => navigation.navigate("MyProfileScreen")}
@@ -68,12 +71,20 @@ export const ProfileScreen = ({ navigation }) => {
           >
             <ProfileFeatureList title="My Order" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("MyCarScreen")}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("MyCarScreen", { routeName: "ProfileScreen" })
+            }
+          >
             <ProfileFeatureList title="My Car" />
           </TouchableOpacity>
         </ProfileFeaturesContainer>
         <SpacerView>
-          <LogoutButton mode="outline" color="#6200EE">
+          <LogoutButton
+            mode="outline"
+            color="#6200EE"
+            onPress={() => onLogout()}
+          >
             Logout
           </LogoutButton>
         </SpacerView>

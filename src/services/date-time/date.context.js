@@ -10,7 +10,11 @@ export const DateContextProvider = ({ children }) => {
     }
   };
   const remove = (selectedDate) => {
-    if (selectedDate.split(" ")[2] === date.toString().split(" ")[2]) {
+    if (selectedDate !== null) {
+      if (selectedDate.split(" ")[2] === date.toString().split(" ")[2]) {
+        setDate([]);
+      }
+    } else {
       setDate([]);
     }
   };

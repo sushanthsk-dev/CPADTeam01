@@ -15,6 +15,7 @@ import { AddressContextProvider } from "../../services/address/address.context";
 import { CartContextProvider } from "../../services/Cart/cart.context";
 import { DateContextProvider } from "../../services/date-time/date.context";
 import { TimeContextProvider } from "../../services/date-time/time.context";
+import { AuthenticationContextProvider } from "../../services/authentication/authentication.context";
 
 const Tab = createBottomTabNavigator();
 const TAB_ICON = {

@@ -2,9 +2,13 @@ import React, { useState, useContext } from "react";
 import { TouchableWithoutFeedback } from "react-native";
 import { ActivityIndicator, Colors } from "react-native-paper";
 import styled from "styled-components/native";
+import validate from "validate.js";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 // import { AuthenticationContext } from "../../../services/authentication/authentication.context";
+const re =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 import {
   AccountBackground,
@@ -26,13 +30,42 @@ const SignInContainer = styled.View`
 `;
 
 export const RegisterScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [repeatedpassword, setRepeatedPassword] = useState("");
-  // const { onRegister, isLoading, error } = useContext(AuthenticationContext);
-  const error = false;
-  const isLoading = false;
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [name, setName] = useState(null);
+  const [repeatedpassword, setRepeatedPassword] = useState(null);
+  const { onRegister, isLoading, error } = useContext(AuthenticationContext);
+  const [nameError, setNameError] = useState(null);
+  const [emailError, setEmailError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
+  const [passwordConfirmError, setPasswordConfirmError] = useState(null);
+  const onSubmit = () => {
+    setNameError(null);
+    setEmailError(null);
+    setPasswordError(null);
+    setPasswordConfirmError(null);
+    setNameError(name === null ? "Please enter a name" : null);
+    setEmailError(email === null ? "Please enter a email" : null);
+    setPasswordError(password === null ? "Please enter a password" : null);
+    setPasswordConfirmError(
+      !repeatedpassword ? "Please enter a confirm password" : null
+    );
+
+    if (email !== null && !re.test(String(email).toLowerCase())) {
+      setEmailError("Please enter a valid email address");
+
+      return;
+    }
+    if (password !== null && password.length <= 7) {
+      setPasswordError("Minimum 8 character required");
+      return;
+    }
+    if (!name || !email || !password || !repeatedpassword) {
+      return;
+    }
+    onRegister(name, email, password, repeatedpassword);
+  };
+
   return (
     <AccountBackground>
       <LogoImageContainer source={require("../../../../assets/logo1.png")} />
@@ -43,6 +76,7 @@ export const RegisterScreen = ({ navigation }) => {
           textContentType="name"
           onChangeText={(n) => setName(n)}
         />
+        {nameError && <Text variant="error">{nameError}</Text>}
         <Spacer size="large">
           <AuthInput
             label="Email"
@@ -52,6 +86,7 @@ export const RegisterScreen = ({ navigation }) => {
             autoCapitalize="none"
             onChangeText={(u) => setEmail(u)}
           />
+          {emailError && <Text variant="error">{emailError}</Text>}
         </Spacer>
         <Spacer size="large">
           <AuthInput
@@ -62,6 +97,7 @@ export const RegisterScreen = ({ navigation }) => {
             autoCapitalize="none"
             onChangeText={(p) => setPassword(p)}
           />
+          {passwordError && <Text variant="error">{passwordError}</Text>}
         </Spacer>
         <Spacer size="large">
           <AuthInput
@@ -72,11 +108,14 @@ export const RegisterScreen = ({ navigation }) => {
             autoCapitalize="none"
             onChangeText={(p) => setRepeatedPassword(p)}
           />
+          {passwordConfirmError && (
+            <Text variant="error">{passwordConfirmError}</Text>
+          )}
         </Spacer>
         {error && (
           <Spacer size="large">
             <ErrorContainer>
-              <Text variant="error">{error.split(": ")[1]}</Text>
+              <Text variant="error">{error}</Text>
             </ErrorContainer>
           </Spacer>
         )}
@@ -85,7 +124,7 @@ export const RegisterScreen = ({ navigation }) => {
             <AuthButton
               icon="lock-open-outline"
               mode="contained"
-              onPress={() => onRegister(email, password, repeatedpassword)}
+              onPress={onSubmit}
             >
               Register
             </AuthButton>
@@ -95,7 +134,9 @@ export const RegisterScreen = ({ navigation }) => {
         </Spacer>
         <SignInContainer>
           <Text>Already have an account? </Text>
-          <TouchableWithoutFeedback onPress={() => console.log("Wow")}>
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate("Login")}
+          >
             <LinkText variant="body">Sign in</LinkText>
           </TouchableWithoutFeedback>
         </SignInContainer>

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, BackHandler } from "react-native";
 
 import styled from "styled-components/native";
 import { CartFloat } from "../../../components/cart/cart-float.component";
@@ -7,6 +7,7 @@ import { Header } from "../../../components/header/header.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 import { CartContext } from "../../../services/Cart/cart.context";
 import { PeriodicServiceContext } from "../../../services/periodicservice/periodicservice.context";
 import { PeriodicServiceInfo } from "../components/periodic-service-info.component";
@@ -27,14 +28,35 @@ const CoverImage = styled.Image`
 `;
 const ScrollViewContainer = styled(ScrollView)`
   background-color: #fff;
-  margin-top: 56px;
+  margin-top: 70px;
 `;
 export const PeriodicServiceScreen = ({ navigation }) => {
+  const [isLoading, setIsLoading] = React.useState(true);
   const { periodicServicePlans } = useContext(PeriodicServiceContext);
+
   const { cart } = useContext(CartContext);
+
+  const handleBackButtonClick = () => {
+    navigation.popToTop();
+    return true;
+  };
+  React.useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        "hardwareBackPress",
+        handleBackButtonClick
+      );
+    };
+  }, []);
   return (
     <SafeArea>
-      <Header navigation={navigation} toLeft={true} title="Periodic Service" />
+      <Header
+        navigation={navigation}
+        topNavigate={true}
+        toLeft={true}
+        title="Periodic Service"
+      />
       {!!cart.id && <CartFloat navigation={navigation} />}
       <ScrollViewContainer>
         <ServiceImageContainer>

@@ -12,6 +12,11 @@ export const LogoImageContainer = styled.Image`
   margin: 0 auto;
 `;
 
+export const ChangePasswordBackground = styled.View`
+  flex: 1;
+  justify-content: center;
+`;
+
 export const AccountBackground = styled.View`
   flex: 1;
   align-items: center;
@@ -37,7 +42,7 @@ export const AuthButton = styled(Button).attrs({
 `;
 
 export const AuthInput = styled(TextInput)`
-  width: 330px;
+  width: 100%;
 `;
 
 export const Title = styled(Text)`

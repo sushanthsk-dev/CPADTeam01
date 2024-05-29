@@ -7,10 +7,10 @@ import { Header } from "../../../components/header/header.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
-// import { AuthenticationContext } from "../../../services/authentication/authentication.context";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 
 import {
-  AccountBackground,
+  ChangePasswordBackground,
   AccountContainer,
   AccountCover,
   AuthButton,
@@ -26,26 +26,27 @@ const SignInContainer = styled.View`
   margin-top: ${(props) => props.theme.space[3]};
 `;
 
-export const ChangePasswordScreen = ({ navigation }) => {
-  const [password, setPassword] = useState("");
-  const [repeatedpassword, setRepeatedPassword] = useState("");
-  // const { onRegister, isLoading, error } = useContext(AuthenticationContext);
-  const error = false;
-  const isLoading = false;
+export const ChangePasswordScreen = ({ navigation, route }) => {
+  const { oldPassword, id } = route.params;
+  const [password, setPassword] = useState("test1234");
+  const [repeatedPassword, setRepeatedPassword] = useState("test1234");
+  const { onPasswordChange, isLoading, error } = useContext(
+    AuthenticationContext
+  );
 
-  const onChangePassword = () => {};
+  const onChangePassword = () => {
+    onPasswordChange(oldPassword, password, repeatedPassword, id);
+  };
 
   return (
     <SafeArea>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Spacer position="left" size="medium">
-          <Spacer position="top" size="large" />
-          <Ionicons name="arrow-back" size={30} color="grey" />
-        </Spacer>
-      </TouchableOpacity>
-      <AccountBackground>
-        <Text variant="title">Reset Password</Text>
+      <Header title="Reset Password" toLeft={true} navigation={navigation} />
+
+      <ChangePasswordBackground>
         <AccountContainer>
+          <Spacer position="left" size="small">
+            <Text variant="title">Please Change your password</Text>
+          </Spacer>
           <Spacer size="large">
             <AuthInput
               label="Password"
@@ -59,7 +60,7 @@ export const ChangePasswordScreen = ({ navigation }) => {
           <Spacer size="large">
             <AuthInput
               label="Repeat Password"
-              value={repeatedpassword}
+              value={repeatedPassword}
               textContentType="password"
               secureTextEntry={true}
               autoCapitalize="none"
@@ -69,18 +70,13 @@ export const ChangePasswordScreen = ({ navigation }) => {
           {error && (
             <Spacer size="large">
               <ErrorContainer>
-                <Text variant="error">{error.split(": ")[1]}</Text>
+                <Text variant="error">{error}</Text>
               </ErrorContainer>
             </Spacer>
           )}
           <Spacer size="large">
             {!isLoading ? (
-              <AuthButton
-                mode="contained"
-                onPress={() =>
-                  onChangePassword(email, password, repeatedpassword)
-                }
-              >
+              <AuthButton mode="contained" onPress={onChangePassword}>
                 Update Password
               </AuthButton>
             ) : (
@@ -88,7 +84,7 @@ export const ChangePasswordScreen = ({ navigation }) => {
             )}
           </Spacer>
         </AccountContainer>
-      </AccountBackground>
+      </ChangePasswordBackground>
     </SafeArea>
   );
 };

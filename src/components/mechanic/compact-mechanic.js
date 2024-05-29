@@ -26,7 +26,6 @@ export const CompactMechanicInfo = ({ mechanic, isMap }) => {
 
   return (
     <Item>
-      <Text variant="caption">1KM away</Text>
       <Image
         source={{
           uri: mechanic.photo,

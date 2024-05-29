@@ -21,6 +21,9 @@ export const InputController = ({
   text = true,
   divide = true,
   control,
+  readOnly = false,
+  defaultValue,
+  ...props
 }) => {
   const onChange = (arg) => {
     return {
@@ -39,7 +42,9 @@ export const InputController = ({
             onBlur={onBlur}
             onChangeText={(v) => onChange(v)}
             value={value}
-            label={label}
+            label={defaultValue ? defaultValue : label}
+            editable={!readOnly}
+            {...props}
           />
         ) : !text ? (
           <PincodeInput
@@ -48,6 +53,8 @@ export const InputController = ({
             label={label}
             value={value}
             onChangeText={(v) => onChange(v)}
+            editable={!readOnly}
+            {...props}
           />
         ) : (
           <CityInput
@@ -55,11 +62,12 @@ export const InputController = ({
             label={label}
             value={value}
             onChangeText={(v) => onChange(v)}
+            {...props}
           />
         );
       }}
       name={name}
-      rules={{ required: true }}
+      rules={rules}
     />
   );
 };

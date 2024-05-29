@@ -9,19 +9,20 @@ import { ProfilePhotoContainer } from "../components/profile-photo-container.com
 import { InputController } from "../../../components/form-control/input-control.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
-import { ProfileContext } from "../../../services/profile-details/profile.context";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 
 const MyProfileContainer = styled.View`
-  margin-top: 56px;
+  margin-top: 70px;
   align-items: center;
 `;
 
 const ProfileDetails = styled.View``;
 
 export const MyProfileScreen = ({ navigation }) => {
-  const { saveProfileDetails, profileDetails, isProfileLoading } =
-    useContext(ProfileContext);
-  const isLoading = false;
+  const { user, isLoading, updateUserDetails, response } = useContext(
+    AuthenticationContext
+  );
+
   const {
     register,
     handleSubmit,
@@ -30,16 +31,19 @@ export const MyProfileScreen = ({ navigation }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: profileDetails !== null ? profileDetails.name : "",
-      email: profileDetails !== null ? profileDetails.email : "",
-      phoneno: profileDetails !== null ? profileDetails.phoneno : "",
+      name: user !== null ? user.name : "",
+      email: user !== null ? user.email : "",
+      phoneno: user.phoneno !== null ? user.phoneno.toString() : "",
     },
   });
-  const onSubmit = (data) => {
-    saveProfileDetails(data);
-    setTimeout(() => {
-      console.log(data);
-    }, 100);
+  const onSubmit = async (data) => {
+    const res = await updateUserDetails(data);
+
+    if (res === "success") {
+      setTimeout(() => {
+        navigation.goBack();
+      }, 500);
+    }
   };
   const UpdateButton = styled(Button)`
     width: 340px;
@@ -69,9 +73,6 @@ export const MyProfileScreen = ({ navigation }) => {
                 label="Email"
                 rules={{ required: true }}
                 name="email"
-                placeValue={
-                  profileDetails.email !== null ? profileDetails.email : null
-                }
                 divide={false}
                 text={true}
                 control={control}
@@ -86,21 +87,17 @@ export const MyProfileScreen = ({ navigation }) => {
                 label="Phone Number"
                 rules={{ required: true }}
                 name="phoneno"
-                placeValue={
-                  profileDetails.phoneno !== null
-                    ? profileDetails.phoneno
-                    : null
-                }
                 divide={false}
-                text={true}
+                text={false}
                 control={control}
+                maxLength={10}
               />
               {errors.phoneno && (
                 <Text variant="error">Please enter the address</Text>
               )}
             </Spacer>
             <Spacer size="large">
-              {!isProfileLoading ? (
+              {!isLoading ? (
                 <UpdateButton mode="contained" onPress={handleSubmit(onSubmit)}>
                   Update Details
                 </UpdateButton>

@@ -23,12 +23,21 @@ const HeaderText = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.title};
   color: ${(props) => props.theme.colors.bg.primary};
 `;
-export const Header = ({ title = "", toLeft = false, navigation }) => {
+export const Header = ({
+  title = "",
+  toLeft = false,
+  topNavigate = false,
+  navigation,
+}) => {
   return (
     <HeaderContainer toLeft={toLeft}>
       {!!toLeft && (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Spacer position="left" size="medium">
+        <TouchableOpacity
+          onPress={() =>
+            topNavigate ? navigation.popToTop() : navigation.goBack()
+          }
+        >
+          <Spacer position="left" size="large">
             <Ionicons name="arrow-back" size={30} color="white" />
           </Spacer>
         </TouchableOpacity>
