@@ -84,7 +84,7 @@ export const BookingOrderContextProvider = ({ children }) => {
   const updateServiceOrderStatus = async (orderId, orderStatus) => {
     setIsLoading(true);
     setUpdate(false);
-    console.log(orderId);
+    console.log(orderId, orderStatus);
     try {
       const res = await axios({
         method: "PATCH",
@@ -94,11 +94,19 @@ export const BookingOrderContextProvider = ({ children }) => {
           orderStatus: orderStatus,
         },
       });
+      if (orderStatus === "Deliveried") {
+        console.log(orderStatus);
+        getAgentAssignedOrders();
+      }
+      console.log(res.data.status);
       if (res.data.status === "success") {
         setUpdate(true);
         setServiceOrder(res.data.data.data);
         filteredServiceOrderedList(orderId, orderStatus);
         toastMessage(`Car ${orderStatus} successfully`);
+
+        console.log(orderStatus);
+
         setIsLoading(false);
         return "success";
       }

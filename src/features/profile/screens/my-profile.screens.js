@@ -69,34 +69,46 @@ export const MyProfileScreen = ({ navigation }) => {
             <Spacer>
               <InputController
                 label="Name"
-                rules={{ required: true }}
+                rules={{ required: true, pattern: /^[a-zA-Z_ ]*$/ }}
                 name="name"
                 divide={false}
                 text={true}
                 control={control}
               />
               {errors.name && (
-                <Text variant="error">Please enter the address</Text>
+                <Text variant="error">
+                  {errors.name.type === "required"
+                    ? "Please enter the name"
+                    : "Please enter only alphabet letters"}
+                </Text>
               )}
             </Spacer>
             <Spacer size="large">
               <InputController
                 label="Email"
-                rules={{ required: true }}
+                rules={{
+                  required: true,
+                  pattern:
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                }}
                 name="email"
                 divide={false}
                 text={true}
                 control={control}
               />
               {errors.email && (
-                <Text variant="error">Please enter the address</Text>
+                <Text variant="error">
+                  {errors.email.type === "required"
+                    ? "Please enter the email address"
+                    : "Please enter valid email address"}
+                </Text>
               )}
             </Spacer>
 
             <Spacer size="large">
               <InputController
-                label="Phone Number"
-                rules={{ required: true }}
+                label="Phone number(Required)*"
+                rules={{ required: true, pattern: /^[6-9]\d{9}$/g }}
                 name="phoneno"
                 divide={false}
                 text={false}
@@ -104,7 +116,11 @@ export const MyProfileScreen = ({ navigation }) => {
                 maxLength={10}
               />
               {errors.phoneno && (
-                <Text variant="error">Please enter the phoneno</Text>
+                <Text variant="error">
+                  {errors.phoneno.type === "required"
+                    ? "Please enter  phone number"
+                    : "Please enter valid phone number"}
+                </Text>
               )}
             </Spacer>
             {error && (

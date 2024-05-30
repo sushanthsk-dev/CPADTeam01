@@ -73,6 +73,10 @@ export const AgentProfileScreen = ({ navigation, route }) => {
             <TextData variant="body">{user.email}</TextData>
           </SpacerView>
           <SpacerView>
+            <TextData variant="subHead">Phone no</TextData>
+            <TextData variant="body">{user.phoneno}</TextData>
+          </SpacerView>
+          <SpacerView>
             <TextData variant="subHead">Work assigned location</TextData>
             <TextData variant="body">{user.workAssignedLocation}</TextData>
           </SpacerView>

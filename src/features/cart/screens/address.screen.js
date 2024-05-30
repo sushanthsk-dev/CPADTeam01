@@ -14,7 +14,7 @@ import { AddressContext } from "../../../services/address/address.context";
 import { toastMessage } from "../../../components/toast-message/toast.component";
 
 const AddressContainer = styled.View`
-  margin-top: 50px;
+  margin-top: 30%;
   flex: 1;
   align-items: center;
   justify-content: center;
@@ -77,21 +77,36 @@ export const AddressScreen = ({ navigation }) => {
       <ScrollView>
         <AddressContainer>
           <KeyboardAvoidingView behavior="height">
-            <Spacer size="four_large">
+            <Spacer size="larger">
               <InputController
                 label="Address(Required)*"
-                rules={{ required: true }}
-                name="address"
-                placeValue={setPlaceValue}
                 divide={false}
-                text={true}
+                rules={{
+                  required: true,
+                  pattern: /^[a-zA-Z_ ]*$/,
+                }}
+                name="address"
                 control={control}
               />
               {errors.address && (
-                <Text variant="error">Please enter the address</Text>
+                <Text variant="error">
+                  {errors.address.type === "required"
+                    ? "Please enter the address"
+                    : "Please enter only alphabet letters"}
+                </Text>
               )}
             </Spacer>
             <PincodeCityContainer>
+              <Spacer size="four_large">
+                <InputController
+                  label="City(Required)*"
+                  rules={{ required: true, pattern: /^[a-zA-Z_ ]*$/ }}
+                  name="city"
+                  divide={true}
+                  text={true}
+                  control={control}
+                />
+              </Spacer>
               <Spacer size="four_large">
                 <InputController
                   label="Pincode(Required)*"
@@ -104,40 +119,43 @@ export const AddressScreen = ({ navigation }) => {
                 />
                 {errors.pincode && (
                   <Text variant="error">
-                    {errors.registrationNo.type === "required"
+                    {errors.pincode.type === "required"
                       ? "Please enter the pincode"
                       : "Please enter valid pincode"}
                   </Text>
                 )}
               </Spacer>
-              <Spacer size="four_large">
-                <InputController
-                  label="City(Required)*"
-                  rules={{ required: true }}
-                  name="city"
-                  divide={true}
-                  text={true}
-                  control={control}
-                />
-                {errors.city && <Text variant="error">City is required</Text>}
-              </Spacer>
             </PincodeCityContainer>
+            <Spacer>
+              {errors.city && (
+                <Text variant="error">
+                  {errors.city.type === "required"
+                    ? "Please enter the city"
+                    : "Please enter a alphabet letters"}
+                </Text>
+              )}
+            </Spacer>
             <Spacer size="four_large">
               <InputController
                 label="State(Required)*"
-                rules={{ required: true }}
+                rules={{ required: true, pattern: /^[a-zA-Z_ ]*$/ }}
                 name="state"
                 text={true}
                 divide={false}
                 control={control}
               />
-
-              {errors.state && <Text variant="error">State is required</Text>}
+              {errors.state && (
+                <Text variant="error">
+                  {errors.state.type === "required"
+                    ? "Please enter the state"
+                    : "Please enter only alphabet letters"}
+                </Text>
+              )}
             </Spacer>
             <Spacer size="four_large">
               <InputController
                 label="Phone number(Required)*"
-                rules={{ required: true }}
+                rules={{ required: true, pattern: /^[6-9]\d{9}$/g }}
                 name="phoneno"
                 divide={false}
                 text={false}
@@ -145,7 +163,11 @@ export const AddressScreen = ({ navigation }) => {
                 maxLength={10}
               />
               {errors.phoneno && (
-                <Text variant="error">Phone number is required</Text>
+                <Text variant="error">
+                  {errors.phoneno.type === "required"
+                    ? "Please enter the phone number"
+                    : "Please enter valid phone number"}
+                </Text>
               )}
             </Spacer>
             {error !== null && (
@@ -153,7 +175,7 @@ export const AddressScreen = ({ navigation }) => {
                 <Text variant="error">{error}</Text>
               </Spacer>
             )}
-            <Spacer size="four_large">
+            <Spacer size="medium">
               {!isLoading ? (
                 <AddressButton
                   mode="contained"

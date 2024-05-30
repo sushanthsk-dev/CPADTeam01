@@ -11,10 +11,8 @@ export const Swipe = ({ orderStatus, orderId }) => {
   const currentStatusIndex = serviceStatus.indexOf(orderStatus) + 1;
 
   const [title, setTitle] = React.useState(serviceStatus[currentStatusIndex]);
-  const { updateServiceOrderStatus, getBookingOrders } =
-    React.useContext(BookingOrderContext);
-  React.useEffect(() => { 
-  }, []);
+  const { updateServiceOrderStatus } = React.useContext(BookingOrderContext);
+  React.useEffect(() => {}, []);
   return (
     <SwipeBtnSection>
       <SwipeButton
