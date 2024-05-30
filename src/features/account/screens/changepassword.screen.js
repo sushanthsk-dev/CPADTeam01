@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
+import { useForm } from "react-hook-form";
 import { ActivityIndicator, Colors } from "react-native-paper";
 import styled from "styled-components/native";
+import { AuthInputController } from "../../../components/form-control/auth-input-controller";
 import { Header } from "../../../components/header/header.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
@@ -28,16 +28,26 @@ const SignInContainer = styled.View`
 
 export const ChangePasswordScreen = ({ navigation, route }) => {
   const { oldPassword, id } = route.params;
-  const [password, setPassword] = useState("test1234");
-  const [repeatedPassword, setRepeatedPassword] = useState("test1234");
-  const { onPasswordChange, isLoading, error } = useContext(
+  const { onPasswordChange, isLoading, error, setError } = useContext(
     AuthenticationContext
   );
-
-  const onChangePassword = () => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      password: "",
+      repeatedPassword: "",
+    },
+  });
+  const onChangePassword = ({ password, repeatedPassword }) => {
     onPasswordChange(oldPassword, password, repeatedPassword, id);
   };
-
+  React.useEffect(() => {
+    () => setError(null);
+  }, []);
   return (
     <SafeArea>
       <Header title="Reset Password" toLeft={true} navigation={navigation} />
@@ -47,25 +57,35 @@ export const ChangePasswordScreen = ({ navigation, route }) => {
           <Spacer position="left" size="small">
             <Text variant="title">Please Change your password</Text>
           </Spacer>
-          <Spacer size="large">
-            <AuthInput
+          <Spacer size="larger">
+            <AuthInputController
               label="Password"
-              value={password}
+              rules={{ required: true }}
+              name="password"
+              control={control}
               textContentType="password"
               secureTextEntry={true}
               autoCapitalize="none"
-              onChangeText={(p) => setPassword(p)}
+              modeStyle="contained"
             />
+            {errors.password && (
+              <Text variant="error">Please enter password</Text>
+            )}
           </Spacer>
-          <Spacer size="large">
-            <AuthInput
-              label="Repeat Password"
-              value={repeatedPassword}
+          <Spacer size="larger">
+            <AuthInputController
+              label="Confirm password"
+              rules={{ required: true }}
+              name="repeatedPassword"
+              control={control}
               textContentType="password"
               secureTextEntry={true}
               autoCapitalize="none"
-              onChangeText={(p) => setRepeatedPassword(p)}
+              modeStyle="contained"
             />
+            {errors.repeatedPassword && (
+              <Text variant="error">Please enter confirm password</Text>
+            )}
           </Spacer>
           {error && (
             <Spacer size="large">
@@ -76,7 +96,10 @@ export const ChangePasswordScreen = ({ navigation, route }) => {
           )}
           <Spacer size="large">
             {!isLoading ? (
-              <AuthButton mode="contained" onPress={onChangePassword}>
+              <AuthButton
+                mode="contained"
+                onPress={handleSubmit(onChangePassword)}
+              >
                 Update Password
               </AuthButton>
             ) : (

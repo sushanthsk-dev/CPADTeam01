@@ -11,6 +11,7 @@ import { PriceText } from "../../../components/typography/price-text.component";
 const PlanCard = styled.View`
   flex-direction: row;
   padding: ${(props) => props.theme.space[2]};
+  padding-bottom: ${(props) => props.theme.space[4]};
   margin-bottom: ${(props) => props.theme.space[2]};
 `;
 const PlanCardCover = styled(Card.Cover)`
@@ -56,7 +57,6 @@ export const PeriodicServiceInfo = ({ periodicService = {} }) => {
 
   return (
     <PlanCard style={styles.Card}>
-      <PlanCardCover source={require("../../../../assets/icon.png")} />
       <Info>
         <AddCart servicePlan={periodicService} />
         <TopSection>

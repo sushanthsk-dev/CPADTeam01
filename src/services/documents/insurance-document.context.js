@@ -2,6 +2,7 @@ import React, { useState, createContext } from "react";
 import axios from "axios";
 import { IPADDRESS } from "../../utils/env";
 import { AuthenticationContext } from "../authentication/authentication.context";
+import { toastMessage } from "../../components/toast-message/toast.component";
 
 export const InsuranceDocumentContext = createContext();
 
@@ -34,7 +35,8 @@ export const InsuranceDocumentContextProvider = ({ children }) => {
 
         setIsLoading(false);
       } catch (e) {
-        console.log("E", e);
+        console.log("E", e.response.data.message);
+        setError(e.response.data.message);
         setIsLoading(false);
       }
     }
@@ -57,6 +59,7 @@ export const InsuranceDocumentContextProvider = ({ children }) => {
       if (res.data.status === "success") {
         setInsuranceDocument(null);
         setIsDeleteLoading(false);
+        toastMessage("emission document deleted successfully");
         navigation.goBack();
       }
     } catch (e) {
@@ -76,7 +79,6 @@ export const InsuranceDocumentContextProvider = ({ children }) => {
         // if (res.data.status === "success") {
         //   console.log("success");
         // // }
-        console.log("DOC", res.data.data.doc.emissionDocument);
         if (res.data.data.doc.insuranceDocument !== undefined) {
           setInsuranceDocument(res.data.data.doc.insuranceDocument);
           return res.data.data.doc.insuranceDocument;
@@ -99,6 +101,7 @@ export const InsuranceDocumentContextProvider = ({ children }) => {
         isLoading,
         isDeleteLoading,
         error,
+        setError,
         createDocument,
         setInsuranceDocument,
         getDocument,

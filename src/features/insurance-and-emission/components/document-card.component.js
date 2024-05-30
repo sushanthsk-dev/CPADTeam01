@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 import { EvilIcons } from "@expo/vector-icons";
+import moment from "moment";
 import { Text } from "../../../components/typography/text.component";
 import { View } from "react-native";
 import { Spacer } from "../../../components/spacer/spacer.component";
@@ -27,21 +28,28 @@ const Body = styled.View`
 const setDateFormat = (date) => {
   const currentDate = new Date(date);
   const month =
-    currentDate.getMonth() < 9
+    currentDate.getMonth() <= 9
       ? `0${currentDate.getMonth() + 1}`
       : currentDate.getMonth() + 1;
-
-  return `${month}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+  const day =
+    currentDate.getDate() <= 9
+      ? `0${currentDate.getDate()}`
+      : currentDate.getDate();
+  return `${month}/${day}/${currentDate.getFullYear()}`;
 };
 
 const differenceBetweenDates = (date) => {
-  const currentDate = new Date();
-  const exDate = new Date(date);
-  const difference = exDate.getTime() - currentDate.getTime();
-
-  return Math.ceil(difference / (1000 * 60 * 60 * 24));
+  const currentDate = moment();
+  const exDate = moment(new Date(date), "MM/DD/YYYY");
+  console.log(currentDate, date);
+  //const difference = exDate.getTime() - currentDate.getTime();
+  return exDate.diff(currentDate, "days");
+  //return Math.ceil(difference / (1000 * 60 * 60 * 24));
 };
 export const InsuranceDocumentCard = ({ navigation, insuranceDocument }) => {
+  const remainingExpiryDate = differenceBetweenDates(
+    insuranceDocument.expiryDate
+  );
   return (
     <DocumentCardContainer>
       <Card>
@@ -74,17 +82,24 @@ export const InsuranceDocumentCard = ({ navigation, insuranceDocument }) => {
         </Body>
       </Card>
       <Spacer position="left" size="medium">
-        <Text variant="error">
-          {`Your insurance document will expire in ${differenceBetweenDates(
-            insuranceDocument.expiryDate
-          )}days`}
-        </Text>
+        {remainingExpiryDate > 0 ? (
+          <Text variant="error">
+            {`Your insurance document will expire in ${differenceBetweenDates(
+              insuranceDocument.expiryDate
+            )}${remainingExpiryDate === 1 ? "day" : "days"}`}
+          </Text>
+        ) : (
+          <Text variant="error">Your insurance document expired</Text>
+        )}
       </Spacer>
     </DocumentCardContainer>
   );
 };
 
 export const EmissionDocumentCard = ({ navigation, emissionDocument }) => {
+  const remainingExpiryDate = differenceBetweenDates(
+    emissionDocument.expiryDate
+  );
   return (
     <DocumentCardContainer>
       <Card>
@@ -117,11 +132,15 @@ export const EmissionDocumentCard = ({ navigation, emissionDocument }) => {
         </Body>
       </Card>
       <Spacer position="left" size="medium">
-        <Text variant="error">
-          {`Your emission document will expire in ${differenceBetweenDates(
-            emissionDocument.expiryDate
-          )}days`}
-        </Text>
+        {remainingExpiryDate > 0 ? (
+          <Text variant="error">
+            {`Your emission document will expire in ${differenceBetweenDates(
+              emissionDocument.expiryDate
+            )}${remainingExpiryDate === 1 ? "day" : "days"}`}
+          </Text>
+        ) : (
+          <Text variant="error">Your emission document expired</Text>
+        )}
       </Spacer>
     </DocumentCardContainer>
   );

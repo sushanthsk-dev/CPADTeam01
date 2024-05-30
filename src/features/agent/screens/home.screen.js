@@ -8,11 +8,16 @@ import { Header } from "../../../components/header/header.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { ProfileCard } from "../components/profile-card.component";
 import { Text } from "../../../components/typography/text.component";
+import { BookingOrderContext } from "../../../services/order-list/booking-order.context";
+import { LoadingDiv } from "../../../components/loading/loading.component";
+import { NoOrderContainer } from "../../../components/no-order/no-order.component";
+import { NetworkContext } from "../../../services/internetConnectionCheck/internet-network.context";
+import { NoInternetErrorScreen } from "../../gps-map-error/no-internet-connection";
 
 const Tab = createMaterialTopTabNavigator();
 
 const OrderContainer = styled.View`
-  margin-top: 70px;
+  margin-top: 54px;
   flex: 1;
 `;
 
@@ -42,8 +47,16 @@ const CardContainer = styled(ScrollView)`
   background-color: #fff;
 `;
 
-const AssignText = styled(Text)`
-  color: #fff;
+const Container = styled(View)`
+  margin-top: 30px;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
+const ImageContainer = styled.Image`
+  margin-left: 20px;
+  margin-bottom: 20px;
 `;
 
 const CompletedText = styled(Text)`
@@ -56,55 +69,103 @@ const CompletedText = styled(Text)`
   right: 10px;
   top: 24px;
 `;
-
-const CardList = () => (
-  <Card>
-    <CardHead>
-      <Title>
-        <Text variant="title">KA19HA2021</Text>
-        <Text variant="caption">ID:235466</Text>
-      </Title>
-      <ID>
-        <Text variant="light_text">Basic Service</Text>
-      </ID>
-    </CardHead>
-  </Card>
-);
-
+const CardList = ({ serviceOrder, orderId, servicePlan }) => {
+  return (
+    <Card>
+      <CardHead>
+        <Title>
+          <Text variant="title">{serviceOrder.registrationNo}</Text>
+          <Text variant="caption">{`ID:${orderId}`}</Text>
+        </Title>
+        <ID>
+          <Text variant="light_text">{servicePlan}</Text>
+        </ID>
+      </CardHead>
+    </Card>
+  );
+};
 export const AgentOrderListScreen = ({ navigation, name }) => {
+  const { getAgentAssignedOrders, isLoading, agentAssignedOrderList } =
+    React.useContext(BookingOrderContext);
+
+  const context = React.useContext(NetworkContext);
+  React.useEffect(() => {
+    getAgentAssignedOrders();
+  }, []);
+
+  console.log("LOD", isLoading);
   const onGoingOrders = () => {
-    return (
+    return !isLoading ? (
       <>
         <CardContainer>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("AgentOrderSummaryScreen", { name: name })
-            }
-          >
-            <CardList />
-          </TouchableOpacity>
-          <CompletedText variant="light_text">Assigned</CompletedText>
+          {agentAssignedOrderList !== undefined &&
+            agentAssignedOrderList.map(
+              (serviceOrder) =>
+                serviceOrder.orderStatus !== "Deliveried" && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("AgentOrderSummaryScreen", {
+                        serviceOrderId: serviceOrder._id,
+                      })
+                    }
+                    key={serviceOrder._id}
+                  >
+                    <CardList
+                      key={serviceOrder._id}
+                      serviceOrder={serviceOrder.carDetails}
+                      orderId={serviceOrder.orderId}
+                      servicePlan={serviceOrder.servicePlan}
+                    />
+
+                    <CompletedText variant="light_text">Assigned</CompletedText>
+                  </TouchableOpacity>
+                )
+            )}
+          <NoOrderContainer />
         </CardContainer>
       </>
+    ) : (
+      <LoadingDiv />
     );
   };
   const completedOrders = () => {
-    return (
-      <CardContainer>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("OrderSummaryScreen", { name: name })
-          }
-        >
-          <CardList />
-        </TouchableOpacity>
-        <CompletedText variant="light_text">Completed</CompletedText>
-      </CardContainer>
+    return !isLoading ? (
+      agentAssignedOrderList.length > 0 && (
+        <CardContainer>
+          {agentAssignedOrderList.map(
+            (serviceOrder) =>
+              serviceOrder.orderStatus === "Deliveried" && (
+                <TouchableOpacity
+                  key={serviceOrder._id}
+                  onPress={() =>
+                    navigation.navigate("AgentOrderSummaryScreen", {
+                      serviceOrderId: serviceOrder._id,
+                    })
+                  }
+                >
+                  <CardList
+                    key={serviceOrder._id}
+                    serviceOrder={serviceOrder.carDetails}
+                    orderId={serviceOrder.orderId}
+                    servicePlan={serviceOrder.servicePlan}
+                  />
+                  <CompletedText variant="light_text">Completed</CompletedText>
+                </TouchableOpacity>
+              )
+          )}
+        </CardContainer>
+      )
+    ) : (
+      <LoadingDiv />
     );
   };
 
   return (
     <SafeArea>
+      {context.isConnected && (
+        <NoInternetErrorScreen show={true} navigation={navigation} />
+      )}
+
       <Header title="Manage Orders" />
       <OrderContainer>
         <Tab.Navigator>

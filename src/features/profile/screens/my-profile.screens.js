@@ -10,18 +10,19 @@ import { InputController } from "../../../components/form-control/input-control.
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
+import { toastMessage } from "../../../components/toast-message/toast.component";
 
 const MyProfileContainer = styled.View`
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
   align-items: center;
 `;
 
 const ProfileDetails = styled.View``;
 
 export const MyProfileScreen = ({ navigation }) => {
-  const { user, isLoading, updateUserDetails, response } = useContext(
-    AuthenticationContext
-  );
+  const { user, isLoading, updateUserDetails, response, error, setError } =
+    useContext(AuthenticationContext);
 
   const {
     register,
@@ -45,14 +46,19 @@ export const MyProfileScreen = ({ navigation }) => {
     const res = await updateUserDetails(data);
 
     if (res === "success") {
+      toastMessage("Updated user details");
       setTimeout(() => {
         navigation.goBack();
-      }, 500);
+      }, 200);
     }
   };
   const UpdateButton = styled(Button)`
     width: 340px;
   `;
+
+  React.useEffect(() => {
+    () => setError(null);
+  }, []);
   return (
     <SafeArea>
       <Header toLeft={true} title="My Profile" navigation={navigation} />
@@ -98,9 +104,14 @@ export const MyProfileScreen = ({ navigation }) => {
                 maxLength={10}
               />
               {errors.phoneno && (
-                <Text variant="error">Please enter the address</Text>
+                <Text variant="error">Please enter the phoneno</Text>
               )}
             </Spacer>
+            {error && (
+              <Spacer position="top" size="larger">
+                <Text variant="error">{error}</Text>
+              </Spacer>
+            )}
             <Spacer size="large">
               {!isLoading ? (
                 <UpdateButton mode="contained" onPress={handleSubmit(onSubmit)}>

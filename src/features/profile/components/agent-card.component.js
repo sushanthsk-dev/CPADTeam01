@@ -4,6 +4,7 @@ import { Text } from "../../../components/typography/text.component";
 import { Entypo } from "@expo/vector-icons";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { ProfilePhotoContainer } from "./profile-photo-container.component";
+import { TouchableOpacity, Linking } from "react-native";
 const AgentCardContainer = styled.View`
   background-color: ${(props) => props.theme.colors.ui.tertiary};
   flex-direction: row;
@@ -24,6 +25,11 @@ const AgentDetails = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
+
+const PhonenoText = styled(Text)`
+  color: ${(props) => props.theme.colors.brand.secondary};
+`;
+
 export const AgentCard = ({ agent }) => {
   return (
     <AgentCardContainer>
@@ -31,9 +37,11 @@ export const AgentCard = ({ agent }) => {
       <AgentDetails>
         <SpacerView>
           <Text variant="subTitle">{agent.name}</Text>
-          <Spacer>
-            <Text variant="subHead">{agent.phoneno}</Text>
-          </Spacer>
+          <TouchableOpacity
+            onPress={() => Linking.openURL(`tel:${agent.phoneno}`)}
+          >
+            <PhonenoText variant="subHead">{agent.phoneno}</PhonenoText>
+          </TouchableOpacity>
         </SpacerView>
 
         <LocationContainer>

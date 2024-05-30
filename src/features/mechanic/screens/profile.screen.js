@@ -10,11 +10,13 @@ import { Header } from "../../../components/header/header.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 import { ProfilePhotoContainer } from "../../profile/components/profile-photo-container.component";
 import { AddressCard } from "../components/address-card.component";
 
 const Container = styled(ScrollView)`
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
   height: 100%;
   padding: ${(props) => props.theme.space[2]};
 `;
@@ -39,60 +41,60 @@ const SpacerView = styled.View`
   border-color: grey;
 `;
 
-const LogoutSpacerView = styled.View`
-  width: 100%;
-`;
-
 const LogoutButton = styled(Button)`
   border-radius: 5px;
-  margin: ${(props) => props.theme.space[2]};
   background-color: ${(props) => props.theme.colors.ui.tertiary};
 `;
 
 export const MechanicProfileScreen = ({ navigation, route }) => {
-  const isLoading = false;
-
+  const { onLogout, user } = React.useContext(AuthenticationContext);
+  console.log(user.location.coordinates);
   return (
     <SafeArea>
-      <Header title="Mechanic Details" />
-      <Container>
+      <Header title="Profile" />
+      <Container showsVerticalScrollIndicator={false}>
         <PhotoContainer>
           <ProfilePhotoContainer />
         </PhotoContainer>
         <Details>
           <SpacerView>
             <TextData variant="subHead">Name</TextData>
-            <TextData variant="body">Virat</TextData>
+            <TextData variant="body">{user.name}</TextData>
           </SpacerView>
           <SpacerView>
             <TextData variant="subHead">Email</TextData>
-            <TextData variant="body">xys@gmail.com</TextData>
+            <TextData variant="body">{user.email}</TextData>
           </SpacerView>
           <SpacerView>
             <TextData variant="subHead">Work assigned location</TextData>
-            <TextData variant="body">Moodbidri</TextData>
+            <TextData variant="body">{user.workAssignedLocation}</TextData>
           </SpacerView>
           <SpacerView>
             <TextData variant="subHead">Role</TextData>
-            <TextData variant="body">Mechanic</TextData>
-          </SpacerView>
-          <SpacerView>
-            <TextData variant="subHead">Phone no</TextData>
-            <TextData variant="body">9876543210</TextData>
+            <TextData variant="body">{user.role}</TextData>
           </SpacerView>
         </Details>
-        <Button
-          mode="contained"
-          onPress={() => navigation.navigate("DropMechanicLocationScreen")}
-        >
-          Change Location
-        </Button>
+
+        <Spacer position="top" size="large">
+          <Button
+            mode="contained"
+            onPress={() =>
+              navigation.navigate("ChangeMechanicLocationScreen", {
+                location: user.location.coordinates,
+              })
+            }
+          >
+            Change Location
+          </Button>
+        </Spacer>
+
+        <Spacer position="top" size="large" />
+        <Spacer position="top" size="larger">
+          <LogoutButton mode="outline" color="#6200EE" onPress={onLogout}>
+            Logout
+          </LogoutButton>
+        </Spacer>
       </Container>
-      <LogoutSpacerView>
-        <LogoutButton mode="outline" color="#6200EE">
-          Logout
-        </LogoutButton>
-      </LogoutSpacerView>
     </SafeArea>
   );
 };

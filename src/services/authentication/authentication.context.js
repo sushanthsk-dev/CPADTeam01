@@ -1,6 +1,7 @@
 import React, { useState, createContext } from "react";
 import axios from "axios";
 import { IPADDRESS } from "../../utils/env";
+import { toastMessage } from "../../components/toast-message/toast.component";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthenticationContext = createContext();
@@ -64,7 +65,6 @@ export const AuthenticationContextProvider = ({ children }) => {
       if (isAdmin === true) {
         console.log(res.data.data.user);
         if (!res.data.data.user.isNewUser) {
-          console.log("LOGGED", res.data.token);
           setHeaderToken(res.data.token);
           saveLoggedSession(res.data.token);
           setUser(res.data.data.user);
@@ -80,7 +80,6 @@ export const AuthenticationContextProvider = ({ children }) => {
       }
     } catch (e) {
       setIsLoading(false);
-      console.log(e.response);
       setError(e.response.data.message);
     }
     setIsLoading(false);
@@ -110,6 +109,10 @@ export const AuthenticationContextProvider = ({ children }) => {
         setIsLoading(false);
         return user;
       } catch (e) {
+        if (e.code === undefined) {
+          setIsLoading(false);
+          return toastMessage("No network connection");
+        }
         console.log("E", e);
         setIsLoading(false);
       }
@@ -145,6 +148,75 @@ export const AuthenticationContextProvider = ({ children }) => {
       console.log(e);
       setError(e.response.data.message);
     }
+  };
+
+  const forgotPassword = async (emailId, role) => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const res = await axios({
+        method: "POST",
+        url: `${IPADDRESS}/api/v1/${role}/forgotPassword`,
+        data: { email: emailId },
+      });
+      console.log(res.data.status);
+      if (res.data.status === "success") {
+        setIsLoading(false);
+        return "success";
+      }
+      setIsLoading(false);
+    } catch (e) {
+      setError(e.response.data.message);
+      setIsLoading(false);
+    }
+  };
+
+  const verifyResetToken = async (code, email, role) => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const res = await axios({
+        method: "GET",
+        url: `${IPADDRESS}/api/v1/${role}/verifyResetToken/${code}`,
+      });
+      console.log(res.data);
+      if (res.data.status === "success") {
+        setIsLoading(false);
+        return res.data;
+      }
+      setIsLoading(false);
+    } catch (e) {
+      setError(e.response.data.message);
+      setIsLoading(false);
+    }
+  };
+
+  const resetPassword = async (code, role, password, passwordConfirm) => {
+    setError(null);
+    console.log(password, passwordConfirm);
+    setError(null);
+    setIsLoading(true);
+    try {
+      const res = await axios({
+        method: "PATCH",
+        url: `${IPADDRESS}/api/v1/${role}/resetPassword/${code}`,
+        data: {
+          password: password,
+          passwordConfirm: passwordConfirm,
+        },
+      });
+      console.log(res.data.user);
+      setUser(res.data.data.user);
+      setHeaderToken(res.data.token);
+      saveLoggedSession(res.data.token);
+      setResponse(null);
+      setIsLoading(false);
+      return "success";
+    } catch (e) {
+      setIsLoading(false);
+      setError(e.response.data.message);
+    }
+    setIsLoading(false);
   };
 
   const onPasswordChange = async (
@@ -184,7 +256,7 @@ export const AuthenticationContextProvider = ({ children }) => {
     setIsLoading(true);
     let filteredBody = {};
     if (data.email !== user.email) {
-      Object.assign(filteredBody, { email: data.mail });
+      Object.assign(filteredBody, { email: data.email });
     }
 
     if (parseInt(data.phoneno) !== user.phoneno) {
@@ -197,11 +269,15 @@ export const AuthenticationContextProvider = ({ children }) => {
       setIsLoading(false);
       return "success";
     }
-
+    console.log(filteredBody);
+    const url =
+      user.role === "user"
+        ? `${IPADDRESS}/api/v1/users/updateMe`
+        : `${IPADDRESS}/api/v1/admin/updateMe`;
     try {
       const res = await axios({
         method: "PATCH",
-        url: `${IPADDRESS}/api/v1/users/updateMe`,
+        url: url,
         headers: { Authorization: `Bearer ${headerToken}` },
         data: {
           ...filteredBody,
@@ -209,21 +285,27 @@ export const AuthenticationContextProvider = ({ children }) => {
       });
       setUser(res.data.data.updatedUser);
       setIsLoading(false);
-      return "success";
+      if (res.data.status === "success") {
+        return "success";
+      }
     } catch (e) {
-      console.log(e.response.data.message);
+      setError(e.response.data.message);
+      console.log("U", e.response.data.message);
 
       setIsLoading(false);
-      setError(e.response.data.message);
     }
   };
 
   const onLogout = () => {
-    setUser(null);
     removeSession();
+    setError(null);
+    setTimeout(() => {
+      setUser(null);
+    }, 1000);
   };
   React.useEffect(() => {
     isUserLoggedIn();
+    console.log("RUN");
     setError(null);
     setResponse(null);
     setIsLoading(false);
@@ -236,15 +318,18 @@ export const AuthenticationContextProvider = ({ children }) => {
         user,
         isLoading,
         error,
+        setError,
         onLogin,
         onRegister,
+        forgotPassword,
+        verifyResetToken,
+        resetPassword,
         headerToken,
         getLoggedSession,
         onPasswordChange,
         isUserLoggedIn,
         onLogout,
         setUser,
-        setError,
         response,
         updateUserDetails,
       }}

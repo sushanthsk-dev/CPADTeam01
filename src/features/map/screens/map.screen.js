@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import MapView from "react-native-maps";
 import { FontAwesome } from "@expo/vector-icons";
 import { Button as CallButton, Colors } from "react-native-paper";
+import { AppState, AppStateStatus } from "react-native";
 import styled from "styled-components/native";
 import { Entypo } from "@expo/vector-icons";
 import { Modal, TouchableOpacity, Linking } from "react-native";
@@ -16,6 +17,7 @@ import { Header } from "../../../components/header/header.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 import { IPADDRESS } from "../../../utils/env";
 import { LoadingDiv } from "../../../components/loading/loading.component";
+import { GPSMapErrorScreen } from "../../gps-map-error/gps-map-error.screen";
 
 const Map = styled(MapView)`
   height: 100%;
@@ -41,7 +43,7 @@ const PopupUp = styled.View`
 const KMButtonContainer = styled.View`
   width: 100%;
   position: absolute;
-  z-index: 999;
+  z-index: 888;
   bottom: 60px;
   flex-direction: row;
   justify-content: space-around;
@@ -65,7 +67,11 @@ const MechanicMap = ({ navigation }) => {
   const [KM, setKM] = useState(1000);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [currentMechanic, setCurrentMechanic] = useState(null);
+  const [isGPSEnabled, setIsGPSEnabled] = useState(null);
+  const [currentMechanic, setCurrentMechanic] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   // const [latDelta, setLatDelta] = useState(0);
@@ -100,58 +106,106 @@ const MechanicMap = ({ navigation }) => {
     </Button>
   );
 
+  const [appState, setAppState] = useState(AppState.currentState);
+
+  const checkGPSPermission = async () => {
+    setIsLoading(true);
+    setErrorMsg(null);
+    try {
+      const d = await CurrentLocation.enableNetworkProviderAsync();
+      let { status } =
+        await CurrentLocation.requestForegroundPermissionsAsync();
+      console.log(status);
+      if (status === "granted") {
+        setIsGPSEnabled(true);
+      }
+      if (status === "denied") {
+        setIsGPSEnabled(false);
+      }
+      setIsGPSEnabled(status === "denied" ? false : true);
+      if (status !== "granted") {
+        setIsGPSEnabled(false);
+        setErrorMsg("Permission to access location was denied");
+        return null;
+      } else {
+        setIsGPSEnabled(true);
+        let location = await CurrentLocation.getLastKnownPositionAsync();
+        if (location) {
+          setCurrentLocation({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          });
+        } else {
+          if (isGPSEnabled && status === "granted")
+            setCurrentLocation({
+              latitude: 13.062119,
+              longitude: 74.976985,
+            });
+        }
+        setIsLoading(false);
+      }
+    } catch (e) {
+      setIsLoading(false);
+      setIsGPSEnabled(false);
+      console.log(e);
+    }
+  };
+
+  const fetchLocation = async () => {
+    try {
+      const km = KM / 1000;
+      const res = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${headerToken}` },
+        url: `${IPADDRESS}/api/v1/mechanic/mechanic-within/${km}/center/${currentLocation.longitude},${currentLocation.latitude}/unit/km?fields=name,phoneno,location,photo,role,workAssignedLocation`,
+      });
+      // setMechanics(res.data.data);
+      setMechanics(res.data.data.data);
+    } catch (e) {
+      // console.log(e.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    // handler for app state changes
+    const handleAppStateChange = async (nextAppState = AppStateStatus) => {
+      setAppState(nextAppState);
+    };
+
+    // register the handler to listen for app state changes
+    AppState.addEventListener("change", handleAppStateChange);
+
+    // unsubscribe
+    return () => AppState.removeEventListener("change", handleAppStateChange);
+  }, []);
   useEffect(() => {
     setLagDelta(KM === 1000 ? 0.033 : KM === 5000 ? 0.107 : 0.198);
   }, [KM]);
 
   useEffect(() => {
-    setIsLoading(true);
-    (async () => {
-      try {
-        let { status } =
-          await CurrentLocation.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          setErrorMsg("Permission to access location was denied");
-          return;
-        }
-
-        let location = await CurrentLocation.getCurrentPositionAsync({});
-        setCurrentLocation({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
-        setIsLoading(false);
-      } catch (e) {
-        setIsLoading(false);
-        console.log(e.response.data.message);
-      }
-    })();
-  }, []);
+    // checks that app state changed to 'active' - user comes back from background or inactive state
+    // note -- this will also trigger the first time you enter the screen
+    checkGPSPermission();
+  }, [appState]);
 
   useEffect(() => {
-    const fetchLocation = async () => {
-      try {
-        const km = KM / 1000;
-        const res = await axios({
-          method: "GET",
-          headers: { Authorization: `Bearer ${headerToken}` },
-          url: `${IPADDRESS}/api/v1/mechanic/mechanic-within/${km}/center/${currentLocation.longitude},${currentLocation.latitude}/unit/km?fields=name,phoneno,location,photo,role,workAssignedLocation`,
-        });
-        // setMechanics(res.data.data);
-        setMechanics(res.data.data.data);
-      } catch (e) {
-        console.log(e.response.data.message);
-      }
-    };
     if (currentLocation) {
+      console.log(currentLocation);
       fetchLocation();
     }
-  }, [KM]);
-  isLoading;
+  }, [KM, isGPSEnabled, currentLocation]);
+  console.log("Hello", isGPSEnabled);
   return (
     <SafeArea>
+      {isGPSEnabled === false && (
+        <GPSMapErrorScreen
+          errorMsg={errorMsg}
+          grantGPS={checkGPSPermission}
+          navigation={navigation}
+        />
+      )}
       {isLoading ? (
-        <LoadingDiv />
+        <LoadingDiv noLoading={true} />
       ) : (
         <>
           <Header

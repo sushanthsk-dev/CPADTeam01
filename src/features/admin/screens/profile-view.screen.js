@@ -8,12 +8,15 @@ import {
 import styled from "styled-components/native";
 import { Header } from "../../../components/header/header.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
+import { toastMessage } from "../../../components/toast-message/toast.component";
 import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
+import { AgentMechanicContext } from "../../../services/agent-mechanic/agent-mechanic.context";
 import { ProfilePhotoContainer } from "../../profile/components/profile-photo-container.component";
 
 const Container = styled(ScrollView)`
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
   height: 100%;
   padding: ${(props) => props.theme.space[2]};
 `;
@@ -39,17 +42,45 @@ const SpacerView = styled.View`
 `;
 
 export const ProfileViewScreen = ({ navigation, route }) => {
-  const isLoading = false;
-  const { name, user } = route.params;
-  console.log(user);
-  const onSubmit = () => {
-    Alert.alert("Are you sure you want to deactivate", "", [
+  const { deactivateAgentMechanic, isLoading, activateAgentMechanic } =
+    React.useContext(AgentMechanicContext);
+  const { role, user } = route.params;
+  const onDeactivate = () => {
+    Alert.alert("Deactivate", "Are you sure you want deactivate", [
       {
         text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
+        onPress: () => null,
         style: "cancel",
       },
-      { text: "OK", onPress: () => console.log("OK Pressed") },
+      {
+        text: "OK",
+        onPress: async () => {
+          const res = await deactivateAgentMechanic(user._id, role);
+          if (res === "success") {
+            toastMessage(`${role} deactivated `);
+            navigation.goBack();
+          }
+        },
+      },
+    ]);
+  };
+  const onActivate = () => {
+    Alert.alert("Activate", "Are you sure you want active", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: async () => {
+          const res = await activateAgentMechanic(user._id, role);
+          if (res === "success") {
+            toastMessage(`${role} activated successfully`);
+            navigation.goBack();
+          }
+        },
+      },
     ]);
   };
   return (
@@ -66,7 +97,11 @@ export const ProfileViewScreen = ({ navigation, route }) => {
           </SpacerView>
           <SpacerView>
             <TextData variant="subHead">Email</TextData>
-            <TextData variant="body">x{user.email}</TextData>
+            <TextData variant="body">{user.email}</TextData>
+          </SpacerView>
+          <SpacerView>
+            <TextData variant="subHead">Phone no</TextData>
+            <TextData variant="body">{user.phoneno}</TextData>
           </SpacerView>
           <SpacerView>
             <TextData variant="subHead">Work assigned location</TextData>
@@ -83,14 +118,21 @@ export const ProfileViewScreen = ({ navigation, route }) => {
               <Button
                 mode="contained"
                 onPress={() =>
-                  navigation.navigate("AddUserScreen", { name: name })
+                  navigation.navigate("AddUserScreen", {
+                    role: role,
+                    user: user,
+                  })
                 }
               >
                 Update
               </Button>
               <Spacer position="top" size="large" />
-              <Button mode="contained" onPress={onSubmit} color={Colors.red900}>
-                Deactive
+              <Button
+                mode="contained"
+                onPress={user.active ? onDeactivate : onActivate}
+                color={user.active ? Colors.red900 : Colors.green600}
+              >
+                {user.active ? "Deactive" : "Activate"}
               </Button>
             </>
           ) : (

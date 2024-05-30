@@ -19,20 +19,28 @@ export const PeriodicServiceContextProvider = ({ children }) => {
         .then(periodicServiceTransform)
         .then((periodicServiceResponse) => {
           setPeriodicService(periodicServiceResponse);
+
+          setIsLoading(false);
         })
         .catch((e) => {
           setIsLoading(false);
           console.log(e);
         });
-    }, 2000);
+    }, 1000);
   };
 
   useEffect(() => {
     retrievePeriodicService();
   }, []);
+
   return (
     <PeriodicServiceContext.Provider
-      value={{ periodicServicePlans: periodicService }}
+      value={{
+        periodicServicePlans: periodicService,
+        setPeriodicService,
+        retrievePeriodicService,
+        isLoading,
+      }}
     >
       {children}
     </PeriodicServiceContext.Provider>

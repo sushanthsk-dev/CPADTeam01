@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { TouchableWithoutFeedback } from "react-native";
+import { ScrollView, TouchableWithoutFeedback } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { colors } from "../../../infrastructure/theme/colors";
 import { Text } from "../../../components/typography/text.component";

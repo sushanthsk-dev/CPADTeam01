@@ -12,6 +12,7 @@ import { AuthenticationContext } from "../../../services/authentication/authenti
 const ProfileContainer = styled.View`
   height: 100%;
   width: 100%;
+  justify-content: center;
   align-items: center;
 `;
 

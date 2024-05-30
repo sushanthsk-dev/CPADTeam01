@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components/native";
+import { BackHandler } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { CommonButton } from "../components/cart.styles";
@@ -14,7 +15,8 @@ import { validate } from "validate.js";
 import { colors } from "../../../infrastructure/theme/colors";
 
 const CartContainer = styled.View`
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
   width: 100%;
   height: 100%;
 `;
@@ -43,6 +45,14 @@ const SubmitButton = styled(Button)`
   height: 60px;
   justify-content: center;
 `;
+
+const EmptyCartContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
+
 export const CartScreen = ({ route, navigation }) => {
   const [pincode, setPincode] = useState("574227");
   const [disable, setDisable] = useState(true);
@@ -78,6 +88,7 @@ export const CartScreen = ({ route, navigation }) => {
   const { toLeft, servicePlan } = route.params;
   toLeftBoolean = toLeft === true ? true : false;
 
+  React.useEffect(() => {}, []);
   return (
     <SafeArea>
       <Header title="Cart" toLeft={toLeftBoolean} navigation={navigation} />
@@ -134,7 +145,6 @@ export const CartScreen = ({ route, navigation }) => {
           <CheckoutButton
             disabled={disable}
             onPress={() => {
-              console.log("HE", typeof pincode);
               if (parseInt(pincode) === 574227) {
                 navigation.navigate("CheckoutScreen", {
                   servicePlan: servicePlan,
@@ -149,14 +159,13 @@ export const CartScreen = ({ route, navigation }) => {
         </>
       )}
       {!cart.id && (
-        <CartContainer>
-          <Spacer>
-            <Text>Cart is Empty</Text>
-            <TouchableOpacity onPress={() => navigation.popToTop()}>
-              <Text>Click here to go Home</Text>
-            </TouchableOpacity>
-          </Spacer>
-        </CartContainer>
+        <EmptyCartContainer>
+          <Text variant="checkoutTitle">Cart is Empty</Text>
+          <Spacer size="large" />
+          <TouchableOpacity onPress={() => navigation.popToTop()}>
+            <Text>Click here to go Home</Text>
+          </TouchableOpacity>
+        </EmptyCartContainer>
       )}
     </SafeArea>
   );

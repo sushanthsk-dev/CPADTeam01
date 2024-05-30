@@ -17,7 +17,6 @@ const OrderCardContainer = styled.View`
   border-radius: 5px;
 `;
 export const OrderCard = ({ orderDetails }) => {
-  const createdDate = new Date(orderDetails.createdAt);
   return (
     <OrderCardContainer>
       <Section>
@@ -26,7 +25,15 @@ export const OrderCard = ({ orderDetails }) => {
       </Section>
       <Section>
         <Text variant="light_text">{orderDetails.orderStatus}</Text>
-        <Text variant="caption">{`Ordered on ${createdDate.toDateString()}`}</Text>
+        {!orderDetails.deliveriedDate ? (
+          <Text variant="caption">{`Ordered on ${new Date(
+            orderDetails.createdAt
+          ).toDateString()}`}</Text>
+        ) : (
+          <Text variant="caption">{`Deliveried on ${new Date(
+            orderDetails.deliveriedDate
+          ).toDateString()}`}</Text>
+        )}
       </Section>
     </OrderCardContainer>
   );

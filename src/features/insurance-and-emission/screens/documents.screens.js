@@ -12,7 +12,8 @@ import {
 import { InsuranceDocumentContext } from "../../../services/documents/insurance-document.context";
 import { EmissionDocumentContext } from "../../../services/documents/emission-document.context";
 const DocumentContainer = styled.View`
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
 `;
 
 const Card = styled.View`
@@ -58,7 +59,7 @@ export const DocumentScreen = ({ navigation }) => {
       />
 
       <DocumentContainer>
-        {!insuranceDocument ? (
+        {insuranceDocument === null ? (
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("AddDocumentScreen", { insurance: true })
@@ -75,7 +76,7 @@ export const DocumentScreen = ({ navigation }) => {
             insuranceDocument={insuranceDocument}
           />
         )}
-        {!emissionDocument ? (
+        {emissionDocument === null ? (
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("AddDocumentScreen", { insurance: false })

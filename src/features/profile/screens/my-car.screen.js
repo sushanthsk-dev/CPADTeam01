@@ -11,6 +11,7 @@ import { Dropdown } from "react-native-material-dropdown-v2";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { InputController } from "../../../components/form-control/input-control.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
+import { toastMessage } from "../../../components/toast-message/toast.component";
 const CarContainer = styled.View`
   height: 100%;
   align-items: center;
@@ -92,6 +93,7 @@ export const MyCarScreen = ({ navigation, route }) => {
   const { myCar } = user;
   console.log(myCar);
   const { routeName } = route.params;
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [carModel, setCarModel] = useState(
     myCar ? (myCar.carModel ? myCar.carModel : null) : null
@@ -141,6 +143,7 @@ export const MyCarScreen = ({ navigation, route }) => {
       return;
     }
     try {
+      setIsLoading(true);
       const res = await axios({
         method: "PATCH",
         headers: { Authorization: `Bearer ${headerToken}` },
@@ -151,11 +154,14 @@ export const MyCarScreen = ({ navigation, route }) => {
       });
       if (res.data.status === "success") {
         setUser(res.data.data.updatedUser);
+        setIsLoading(false);
+        toastMessage("Car details added successfully");
         navigation.navigate(routeName);
       }
       console.log(res.data.status);
     } catch (e) {
-      console.log(e.response.data);
+      setIsLoading(false);
+      setError(e.response.data.message);
     }
   };
 
@@ -199,6 +205,7 @@ export const MyCarScreen = ({ navigation, route }) => {
                 pattern: /^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$/,
               }}
               name="registrationNo"
+              placeholder="e.g KA21HA2021"
               placeValue={setPlaceValue}
               divide={false}
               text={true}
@@ -215,8 +222,9 @@ export const MyCarScreen = ({ navigation, route }) => {
           <Spacer size="large">
             <InputController
               label="Model Year(Required)*"
-              rules={{ required: true, pattern: /^(199\d|200\d|2021)$/ }}
+              rules={{ required: true }}
               name="modelYear"
+              {...register("modelYear", { min: 1990, max: 2021 })}
               placeValue={setPlaceValue}
               divide={false}
               text={false}
@@ -230,6 +238,11 @@ export const MyCarScreen = ({ navigation, route }) => {
               </Text>
             )}
           </Spacer>
+          {error && (
+            <Spacer position="top" size="large">
+              <Text variant="error">{error}</Text>
+            </Spacer>
+          )}
           <Spacer size="four_large">
             {!isLoading ? (
               <AddressButton mode="contained" onPress={handleSubmit(onSubmit)}>

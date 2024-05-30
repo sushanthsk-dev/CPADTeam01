@@ -4,12 +4,15 @@ import { ScrollView, TouchableOpacity, BackHandler } from "react-native";
 import styled from "styled-components/native";
 import { CartFloat } from "../../../components/cart/cart-float.component";
 import { Header } from "../../../components/header/header.component";
+import { LoadingDiv } from "../../../components/loading/loading.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 import { CartContext } from "../../../services/Cart/cart.context";
+import { NetworkContext } from "../../../services/internetConnectionCheck/internet-network.context";
 import { PeriodicServiceContext } from "../../../services/periodicservice/periodicservice.context";
+import { NoInternetErrorScreen } from "../../gps-map-error/no-internet-connection";
 import { PeriodicServiceInfo } from "../components/periodic-service-info.component";
 const PeriodicServiceContainer = styled.View`
   width: 100%;
@@ -31,26 +34,20 @@ const ScrollViewContainer = styled(ScrollView)`
   margin-top: 56px;
 `;
 export const PeriodicServiceScreen = ({ navigation }) => {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const { periodicServicePlans } = useContext(PeriodicServiceContext);
+  const { periodicServicePlans, isLoading, retrievePeriodicService } =
+    useContext(PeriodicServiceContext);
 
+  const context = React.useContext(NetworkContext);
   const { cart } = useContext(CartContext);
 
-  const handleBackButtonClick = () => {
-    navigation.popToTop();
-    return true;
-  };
   React.useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        "hardwareBackPress",
-        handleBackButtonClick
-      );
-    };
+    retrievePeriodicService();
   }, []);
-  return (
+  return !isLoading ? (
     <SafeArea>
+      {context.isConnected && (
+        <NoInternetErrorScreen show={true} navigation={navigation} />
+      )}
       <Header
         navigation={navigation}
         topNavigate={true}
@@ -85,5 +82,7 @@ export const PeriodicServiceScreen = ({ navigation }) => {
         </PeriodicServiceContainer>
       </ScrollViewContainer>
     </SafeArea>
+  ) : (
+    <LoadingDiv />
   );
 };

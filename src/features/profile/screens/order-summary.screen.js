@@ -12,11 +12,15 @@ import { AgentCard } from "../components/agent-card.component";
 import { ServiceStatus } from "../components/service-status.component";
 import { IPADDRESS } from "../../../utils/env";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
-import { AddressCard } from "../../cart/components/address-card.component";
+import {
+  AddressCard,
+  PickupDateTimeCard,
+} from "../../cart/components/address-card.component";
 
 const OrderContainer = styled(ScrollView)`
   margin: 0 ${(props) => props.theme.space[2]};
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
 `;
 
 const OrderCard = styled.View`
@@ -46,6 +50,7 @@ const ServiceStatusContainer = styled.View`
 `;
 const ServiceAgentDetails = styled.View`
   margin: ${(props) => props.theme.space[1]};
+  margin-bottom: 20px;
 `;
 const Loading = styled(ActivityIndicator)`
   margin-left: -25px;
@@ -119,6 +124,18 @@ export const OrderSummary = ({ navigation, route }) => {
                 </SpacerView>
               </Spacer>
             </OrderCard>
+            <Spacer position="top" size="medium" />
+            <Spacer position="left" size="medium">
+              <Text variant="label">{`Service Ordered on ${new Date(
+                order.createdAt
+              ).toDateString()}`}</Text>
+            </Spacer>
+            <Spacer position="top" size="large">
+              <Spacer position="left" size="medium">
+                <Text variant="subHead">Pickup Date and time</Text>
+              </Spacer>
+              <PickupDateTimeCard pickupDateTime={order.pickupDateTime} />
+            </Spacer>
             <Spacer>
               <Spacer position="left" size="medium">
                 <Text variant="subHead">Pickup Address</Text>
@@ -135,8 +152,18 @@ export const OrderSummary = ({ navigation, route }) => {
             </Spacer>
             <ServiceStatusContainer>
               <Text variant="subHead">Service Status</Text>
-              <ServiceStatus orderStatus={order.carDetails.orderStatus} />
+              <ServiceStatus orderStatus={order.orderStatus} />
             </ServiceStatusContainer>
+            {order.deliveriedDate && (
+              <>
+                <Spacer position="top" size="large" />
+                <Spacer position="left" size="medium">
+                  <Text variant="label">{`Car deliveried on ${new Date(
+                    order.deliveriedDate
+                  ).toDateString()}`}</Text>
+                </Spacer>
+              </>
+            )}
             {!!order.agent && (
               <ServiceAgentDetails>
                 <Text variant="subHead">Assigned to</Text>

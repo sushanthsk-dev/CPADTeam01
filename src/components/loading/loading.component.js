@@ -12,8 +12,16 @@ const LoadingContainer = styled.View`
   left: 50%;
 `;
 
-export const LoadingDiv = () => (
-  <LoadingContainer>
-    <Loading size={50} animating={true} color={Colors.blue300} />
-  </LoadingContainer>
-);
+const BlankScreen = styled.View`
+  flex: 1;
+`;
+
+export const LoadingDiv = ({ noLoading }) => {
+  return noLoading !== true ? (
+    <LoadingContainer>
+      <Loading size={50} animating={true} color={Colors.blue300} />
+    </LoadingContainer>
+  ) : (
+    <BlankScreen />
+  );
+};

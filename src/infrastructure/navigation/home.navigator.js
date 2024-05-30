@@ -44,8 +44,8 @@ export const HomeNavigator = () => {
             name="PeriodicServiceDetails"
             component={PeriodicServiceDetails}
           />
-          <HomeStack.Screen name="AddressScreen" component={AddressScreen} />
           <HomeStack.Screen name="CartScreenInside" component={CartScreen} />
+          <HomeStack.Screen name="AddressScreen" component={AddressScreen} />
           <HomeStack.Screen name="CheckoutScreen" component={CheckoutScreen} />
           <HomeStack.Screen name="OrderScreen" component={OrderScreen} />
           <HomeStack.Screen

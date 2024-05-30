@@ -10,9 +10,12 @@ import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { ProfileContext } from "../../../services/profile-details/profile.context";
 import { ProfilePhotoContainer } from "../../profile/components/profile-photo-container.component";
+import { AuthenticationContext } from "../../../services/authentication/authentication.context";
+import { toastMessage } from "../../../components/toast-message/toast.component";
 
 const MyProfileContainer = styled.View`
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
   align-items: center;
 `;
 
@@ -30,12 +33,16 @@ const LogoutButton = styled(Button)`
 const ProfileDetails = styled.View``;
 
 export const AdminProfileScreen = ({ navigation }) => {
-  const {
-    saveProfileDetails,
-    profileDetails = null,
-    isProfileLoading,
-  } = useContext(ProfileContext);
-  const isLoading = false;
+  // const {
+  //   saveProfileDetails,
+  //   user = null,
+  //   isProfileLoading,
+  // } = useContext(ProfileContext);
+
+  const { user, isLoading, updateUserDetails, onLogout, error } = useContext(
+    AuthenticationContext
+  );
+
   const {
     register,
     handleSubmit,
@@ -44,14 +51,17 @@ export const AdminProfileScreen = ({ navigation }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: profileDetails !== null ? profileDetails.name : "",
-      email: profileDetails !== null ? profileDetails.email : "",
-      phoneno: profileDetails !== null ? profileDetails.phoneno : "",
-      role: profileDetails !== null ? profileDetails.role : "Admin",
+      name: user !== null ? user.name : "",
+      email: user !== null ? user.email : "",
+      phoneno: user !== null ? user.phoneno : "",
+      role: user !== null ? user.role : "Admin",
     },
   });
-  const onSubmit = (data) => {
-    saveProfileDetails(data);
+  const onSubmit = async (data) => {
+    const res = await updateUserDetails(data);
+    if (res === "success") {
+      toastMessage("Updated successfully");
+    }
     setTimeout(() => {
       console.log(data);
     }, 100);
@@ -69,17 +79,24 @@ export const AdminProfileScreen = ({ navigation }) => {
             <Spacer>
               <InputController
                 label="Name"
-                rules={{ required: true }}
+                rules={{
+                  required: true,
+                  pattern: /^[a-zA-Z_ ]*$/,
+                }}
                 name="name"
                 divide={false}
                 text={true}
                 control={control}
               />
               {errors.name && (
-                <Text variant="error">Please enter the name</Text>
+                <Text variant="error">
+                  {errors.name.type === "required"
+                    ? "Please enter the name"
+                    : "Please enter only alphabet letters"}
+                </Text>
               )}
             </Spacer>
-            <Spacer>
+            <Spacer size="large">
               <InputController
                 label="Role"
                 rules={{ required: true }}
@@ -96,9 +113,7 @@ export const AdminProfileScreen = ({ navigation }) => {
                 label="Email"
                 rules={{ required: true }}
                 name="email"
-                placeValue={
-                  profileDetails.email !== null ? profileDetails.email : null
-                }
+                placeValue={user.email !== null ? user.email : null}
                 divide={false}
                 text={true}
                 control={control}
@@ -107,9 +122,13 @@ export const AdminProfileScreen = ({ navigation }) => {
                 <Text variant="error">Please enter the email</Text>
               )}
             </Spacer>
-
+            {error && (
+              <Spacer>
+                <Text variant="error">{error}</Text>
+              </Spacer>
+            )}
             <Spacer size="large">
-              {!isProfileLoading ? (
+              {!isLoading ? (
                 <UpdateButton mode="contained" onPress={handleSubmit(onSubmit)}>
                   Update Details
                 </UpdateButton>
@@ -120,7 +139,7 @@ export const AdminProfileScreen = ({ navigation }) => {
           </ProfileDetails>
         </MyProfileContainer>
         <SpacerView>
-          <LogoutButton mode="outline" color="#6200EE">
+          <LogoutButton mode="outline" color="#6200EE" onPress={onLogout}>
             Logout
           </LogoutButton>
         </SpacerView>

@@ -2,13 +2,11 @@ import React, { useState, useContext } from "react";
 import { TouchableWithoutFeedback } from "react-native";
 import { ActivityIndicator, Colors } from "react-native-paper";
 import styled from "styled-components/native";
-import validate from "validate.js";
+import { useForm } from "react-hook-form";
+import { AuthInputController } from "../../../components/form-control/auth-input-controller";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
-// import { AuthenticationContext } from "../../../services/authentication/authentication.context";
-const re =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 import {
   AccountBackground,
@@ -32,92 +30,119 @@ const SignInContainer = styled.View`
 `;
 
 export const RegisterScreen = ({ navigation }) => {
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [name, setName] = useState(null);
-  const [repeatedpassword, setRepeatedPassword] = useState(null);
-  const { onRegister, isLoading, error } = useContext(AuthenticationContext);
-  const [nameError, setNameError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
-  const [passwordConfirmError, setPasswordConfirmError] = useState(null);
-  const onSubmit = () => {
-    setNameError(null);
-    setEmailError(null);
-    setPasswordError(null);
-    setPasswordConfirmError(null);
-    setNameError(name === null ? "Please enter a name" : null);
-    setEmailError(email === null ? "Please enter a email" : null);
-    setPasswordError(password === null ? "Please enter a password" : null);
-    setPasswordConfirmError(
-      !repeatedpassword ? "Please enter a confirm password" : null
-    );
+  const {
+    register,
+    setPlaceValue,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      repeatedPassword: "",
+    },
+  });
+  const { onRegister, isLoading, error, setError } = useContext(
+    AuthenticationContext
+  );
 
-    if (email !== null && !re.test(String(email).toLowerCase())) {
-      setEmailError("Please enter a valid email address");
-
+  const onSubmit = ({ name, email, password, repeatedPassword }) => {
+    if (password !== repeatedPassword) {
+      setError("Passwords are not same");
       return;
     }
-    if (password !== null && password.length <= 7) {
-      setPasswordError("Minimum 8 character required");
-      return;
-    }
-    if (!name || !email || !password || !repeatedpassword) {
-      return;
-    }
-    onRegister(name, email, password, repeatedpassword);
+    onRegister(name, email, password, repeatedPassword);
   };
+
+  React.useEffect(() => {
+    () => setError(null);
+  }, []);
+
+  React.useEffect(() => {
+    setError(null);
+  }, [handleSubmit]);
 
   return (
     <AccountBackground>
       <LogoImageContainer source={require("../../../../assets/logo1.png")} />
       <RegisterAccountContainer>
-        <Spacer>
-          <AuthInput
+        <Spacer size="larger">
+          <AuthInputController
             label="Name"
-            value={name}
-            textContentType="name"
-            onChangeText={(n) => setName(n)}
+            rules={{
+              required: true,
+              pattern: /^[a-zA-Z_ ]*$/,
+            }}
+            name="name"
+            control={control}
+            modeStyle="contained"
           />
-          {nameError && <Text variant="error">{nameError}</Text>}
+          {errors.name && (
+            <Text variant="error">
+              {errors.name.type === "required"
+                ? "Please enter the name"
+                : "Please enter only alphabet letters"}
+            </Text>
+          )}
         </Spacer>
-        <Spacer size="large">
-          <AuthInput
+        <Spacer size="larger">
+          <AuthInputController
             label="Email"
-            value={email}
+            rules={{
+              required: true,
+              pattern:
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            }}
+            name="email"
             textContentType="emailAddress"
             keyboardType="email-address"
             autoCapitalize="none"
-            onChangeText={(u) => setEmail(u)}
+            control={control}
+            modeStyle="contained"
           />
-          {emailError && <Text variant="error">{emailError}</Text>}
+          {errors.email && (
+            <Text variant="error">
+              {errors.email.type === "required"
+                ? "Please enter the email address"
+                : "Please enter valid email address"}
+            </Text>
+          )}
         </Spacer>
-        <Spacer size="large">
-          <AuthInput
+        <Spacer size="larger">
+          <AuthInputController
             label="Password"
-            value={password}
+            rules={{ required: true }}
+            name="password"
+            control={control}
             textContentType="password"
             secureTextEntry={true}
             autoCapitalize="none"
-            onChangeText={(p) => setPassword(p)}
+            modeStyle="contained"
           />
-          {passwordError && <Text variant="error">{passwordError}</Text>}
+          {errors.password && (
+            <Text variant="error">Please enter password</Text>
+          )}
         </Spacer>
-        <Spacer size="large">
-          <AuthInput
-            label="Confirm Password"
-            value={repeatedpassword}
+        <Spacer size="larger">
+          <AuthInputController
+            label="Confirm password"
+            rules={{ required: true }}
+            name="repeatedPassword"
+            control={control}
             textContentType="password"
             secureTextEntry={true}
             autoCapitalize="none"
-            onChangeText={(p) => setRepeatedPassword(p)}
+            modeStyle="contained"
           />
-          {passwordConfirmError && (
-            <Text variant="error">{passwordConfirmError}</Text>
+          {errors.repeatedPassword && (
+            <Text variant="error">Please enter confirm password</Text>
           )}
         </Spacer>
         {error && (
-          <Spacer size="large">
+          <Spacer size="medium">
             <ErrorContainer>
               <Text variant="error">{error}</Text>
             </ErrorContainer>
@@ -128,7 +153,7 @@ export const RegisterScreen = ({ navigation }) => {
             <AuthButton
               icon="lock-open-outline"
               mode="contained"
-              onPress={onSubmit}
+              onPress={handleSubmit(onSubmit)}
             >
               Register
             </AuthButton>
@@ -139,7 +164,10 @@ export const RegisterScreen = ({ navigation }) => {
         <SignInContainer>
           <Text>Already have an account? </Text>
           <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => {
+              setError(null);
+              navigation.navigate("LoginScreen");
+            }}
           >
             <LinkText variant="body">Sign in</LinkText>
           </TouchableWithoutFeedback>

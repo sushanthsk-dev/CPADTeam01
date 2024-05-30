@@ -22,7 +22,11 @@ const screenOptions = ({ route }) => {
     },
   };
 };
-const hideScreenArray = ["ProfileViewScreen", "ManageProfileScreen"];
+const hideScreenArray = [
+  "ProfileViewScreen",
+  "ManageProfileScreen",
+  "AgentOrderSummaryScreen",
+];
 
 export const AgentHomeNavigator = () => {
   return (

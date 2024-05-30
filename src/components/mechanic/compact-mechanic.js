@@ -23,12 +23,13 @@ const Item = styled.View`
 const isAndroid = Platform.OS === "android";
 export const CompactMechanicInfo = ({ mechanic, isMap }) => {
   const Image = isAndroid && isMap ? CompactWebview : CompactImage;
-
+  const { photo = "default.jpg" } = mechanic;
+  console.log(photo);
   return (
     <Item>
       <Image
         source={{
-          uri: mechanic.photo,
+          uri: `https://carzoo-bucket.s3.ap-south-1.amazonaws.com/users/${photo}`,
         }}
       />
       <Text center variant="caption" numberOfLines={3}>

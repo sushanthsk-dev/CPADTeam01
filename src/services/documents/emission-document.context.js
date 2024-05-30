@@ -2,6 +2,7 @@ import React, { useState, createContext } from "react";
 import axios from "axios";
 import { IPADDRESS } from "../../utils/env";
 import { AuthenticationContext } from "../authentication/authentication.context";
+import { toastMessage } from "../../components/toast-message/toast.component";
 
 export const EmissionDocumentContext = createContext();
 
@@ -35,6 +36,7 @@ export const EmissionDocumentContextProvider = ({ children }) => {
         setIsLoading(false);
       } catch (e) {
         console.log("E", e.response.data);
+        setError(e.response.data.message);
         setIsLoading(false);
       }
     }
@@ -55,6 +57,7 @@ export const EmissionDocumentContextProvider = ({ children }) => {
         },
       });
       if (res.data.status === "success") {
+        toastMessage("emission document deleted successfully");
         setEmissionDocument(null);
         setIsDeleteLoading(false);
         navigation.goBack();
@@ -76,7 +79,6 @@ export const EmissionDocumentContextProvider = ({ children }) => {
         // if (res.data.status === "success") {
         //   console.log("success");
         // // }
-        console.log("DOC", res.data.data.doc.emissionDocument);
         if (res.data.data.doc.emissionDocument !== undefined) {
           setEmissionDocument(res.data.data.doc.emissionDocument);
           return res.data.data.doc.emissionDocument;
@@ -99,6 +101,7 @@ export const EmissionDocumentContextProvider = ({ children }) => {
         isLoading,
         isDeleteLoading,
         error,
+        setError,
         createDocument,
         setEmissionDocument,
         getDocument,

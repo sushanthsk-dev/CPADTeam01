@@ -17,7 +17,6 @@ export const AddressContextProvider = ({ children }) => {
   const loadAddress = async () => {
     if (headerToken) {
       try {
-        console.log("Header", headerToken);
         const url =
           user.role === "user"
             ? `${IPADDRESS}/api/v1/users/me`

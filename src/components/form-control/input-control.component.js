@@ -22,6 +22,7 @@ export const InputController = ({
   divide = true,
   control,
   readOnly = false,
+  modeStyle = "outlined",
   defaultValue,
   ...props
 }) => {
@@ -38,7 +39,7 @@ export const InputController = ({
         return !divide ? (
           <AddressInput
             keyboardType={`${text ? "default" : "numeric"}`}
-            mode="outlined"
+            mode={modeStyle}
             onBlur={onBlur}
             onChangeText={(v) => onChange(v)}
             value={value}
@@ -49,7 +50,7 @@ export const InputController = ({
         ) : !text ? (
           <PincodeInput
             keyboardType="numeric"
-            mode="outlined"
+            mode={modeStyle}
             label={label}
             value={value}
             onChangeText={(v) => onChange(v)}

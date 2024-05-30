@@ -7,11 +7,15 @@ import { Header } from "../../../components/header/header.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { ProfileCard } from "../components/profile-card.component";
 import { Text } from "../../../components/typography/text.component";
+import { AgentMechanicContext } from "../../../services/agent-mechanic/agent-mechanic.context";
+import { BookingOrderContext } from "../../../services/order-list/booking-order.context";
+import { toastMessage } from "../../../components/toast-message/toast.component";
 
 const Tab = createMaterialTopTabNavigator();
 
 const Container = styled.View`
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
   flex: 1;
 `;
 
@@ -33,21 +37,45 @@ const AddButton = styled(TouchableOpacity)`
   right: 24px;
 `;
 
-export const AgentListScreen = ({ navigation, name }) => {
-  const onAssign = () => {
+export const AgentListScreen = ({ navigation, name, route }) => {
+  const { orderId } = route.params;
+  const { agentMechanic = null, getAgentMechanic } =
+    React.useContext(AgentMechanicContext);
+  const { assignAgent, getBookingOrders } =
+    React.useContext(BookingOrderContext);
+  const onAssign = async (agentId) => {
     console.log("Assigned");
-    setTimeout(() => {
+    const res = await assignAgent(orderId, agentId);
+    if (res === "success") {
       navigation.navigate("OrderListScreen");
-    }, 500);
+    }
+    // setTimeout(() => {
+    //   navigation.navigate("OrderListScreen");
+    // }, 500);
   };
+
+  React.useEffect(() => {
+    getAgentMechanic("agent");
+    getBookingOrders();
+  }, []);
   return (
     <SafeArea>
       <Header toLeft={true} navigation={navigation} title="Assign Agent" />
       <Container>
         <CardContainer>
-          <TouchableOpacity onPress={onAssign}>
-            <ProfileCard name={name} />
-          </TouchableOpacity>
+          {agentMechanic !== null &&
+            agentMechanic.map(
+              (agent) =>
+                agent.role === "agent" &&
+                agent.active === true && (
+                  <TouchableOpacity
+                    onPress={() => onAssign(agent._id)}
+                    key={agent._id}
+                  >
+                    <ProfileCard user={agent} />
+                  </TouchableOpacity>
+                )
+            )}
         </CardContainer>
       </Container>
     </SafeArea>

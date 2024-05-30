@@ -4,7 +4,6 @@ import { View, ScrollView, KeyboardAvoidingView } from "react-native";
 import { Button, ActivityIndicator, Colors } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
-import { IPADDRESS } from "../../../utils/env";
 import { Header } from "../../../components/header/header.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
@@ -12,6 +11,7 @@ import { Text } from "../../../components/typography/text.component";
 import { InputController } from "../../../components/form-control/input-control.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 import { AddressContext } from "../../../services/address/address.context";
+import { toastMessage } from "../../../components/toast-message/toast.component";
 
 const AddressContainer = styled.View`
   margin-top: 50px;
@@ -32,6 +32,7 @@ const AddressButton = styled(Button)`
 
 export const AddressScreen = ({ navigation }) => {
   const [loading, setloading] = useState(false);
+  const { user } = useContext(AuthenticationContext);
   const { address, addAddress, isLoading, setAddress, error, setError } =
     useContext(AddressContext);
   const {
@@ -48,9 +49,9 @@ export const AddressScreen = ({ navigation }) => {
       pincode: address ? address.pincode : "574227",
       state: address ? address.state : "",
       phoneno: address
-        ? address.phoneno
-          ? address.phoneno.toString()
-          : ""
+        ? address.phoneno.toString()
+        : user.phoneno
+        ? user.phoneno.toString()
         : "",
     },
   });
@@ -61,9 +62,14 @@ export const AddressScreen = ({ navigation }) => {
     const res = await addAddress(data);
     console.log(res);
     if (res === "success") {
+      toastMessage("Address added successfully");
+      setError(null);
       navigation.goBack();
     }
   };
+  React.useEffect(() => {
+    () => setError(null);
+  }, []);
 
   return (
     <SafeArea>
@@ -97,7 +103,11 @@ export const AddressScreen = ({ navigation }) => {
                   control={control}
                 />
                 {errors.pincode && (
-                  <Text variant="error">Pincode is required</Text>
+                  <Text variant="error">
+                    {errors.registrationNo.type === "required"
+                      ? "Please enter the pincode"
+                      : "Please enter valid pincode"}
+                  </Text>
                 )}
               </Spacer>
               <Spacer size="four_large">
@@ -138,6 +148,11 @@ export const AddressScreen = ({ navigation }) => {
                 <Text variant="error">Phone number is required</Text>
               )}
             </Spacer>
+            {error !== null && (
+              <Spacer position="top" size="medium">
+                <Text variant="error">{error}</Text>
+              </Spacer>
+            )}
             <Spacer size="four_large">
               {!isLoading ? (
                 <AddressButton

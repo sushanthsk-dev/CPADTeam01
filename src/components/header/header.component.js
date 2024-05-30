@@ -9,7 +9,7 @@ import { Spacer } from "../spacer/spacer.component";
 const HeaderContainer = styled.View`
   position: absolute;
   width: 100%;
-  z-index: 888;
+  z-index: 1111;
   height: 56px;
   background-color: ${(props) => props.theme.colors.brand.primary};
   flex-direction: row;

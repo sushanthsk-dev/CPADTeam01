@@ -15,6 +15,8 @@ import { AddressContextProvider } from "../../services/address/address.context";
 import { AdminProfileScreen } from "../../features/admin/screens/admin-profile.screen";
 import { AdminNavigator } from "./admin.navigator";
 import { AdminScreen } from "../../features/admin/screens/home.screen";
+import { AgentMechanicContextProvider } from "../../services/agent-mechanic/agent-mechanic.context";
+import { BookingOrderContextProvider } from "../../services/order-list/booking-order.context";
 
 const Tab = createBottomTabNavigator();
 const TAB_ICON = {
@@ -33,37 +35,45 @@ const screenOptions = ({ route }) => {
 const hideScreenArray = [
   "ProfileViewScreen",
   "ManageProfileScreen",
-  "AddUserScreen"
+  "AddUserScreen",
+  "OrderListScreen",
+  "OrderSummaryScreen",
+  "AgentListScreen",
 ];
 
 export const AdminHomeNavigator = () => {
   return (
     <ProfileContextProvider>
       <AddressContextProvider>
-        <Tab.Navigator
-          screenOptions={screenOptions}
-          tabBarOptions={{
-            activeTintColor: "#6200EE",
-            inactiveTintColor: "#262626",
-            showLabel: false,
-          }}
-        >
-          <Tab.Screen
-            name="Home"
-            component={AdminNavigator}
-            options={({ route }) => ({
-              tabBarVisible: ((routes) => {
-                const routeName = getFocusedRouteNameFromRoute(routes) ?? "";
-                console.log(routeName);
-                if (hideScreenArray.includes(routeName)) {
-                  return false;
-                }
-                return true;
-              })(route),
-            })}
-          />
-          <Tab.Screen name="Profile" component={AdminProfileScreen} />
-        </Tab.Navigator>
+        <AgentMechanicContextProvider>
+          <BookingOrderContextProvider>
+            <Tab.Navigator
+              screenOptions={screenOptions}
+              tabBarOptions={{
+                activeTintColor: "#6200EE",
+                inactiveTintColor: "#262626",
+                showLabel: false,
+              }}
+            >
+              <Tab.Screen
+                name="Home"
+                component={AdminNavigator}
+                options={({ route }) => ({
+                  tabBarVisible: ((routes) => {
+                    const routeName =
+                      getFocusedRouteNameFromRoute(routes) ?? "";
+                    console.log(routeName);
+                    if (hideScreenArray.includes(routeName)) {
+                      return false;
+                    }
+                    return true;
+                  })(route),
+                })}
+              />
+              <Tab.Screen name="Profile" component={AdminProfileScreen} />
+            </Tab.Navigator>
+          </BookingOrderContextProvider>
+        </AgentMechanicContextProvider>
       </AddressContextProvider>
     </ProfileContextProvider>
   );

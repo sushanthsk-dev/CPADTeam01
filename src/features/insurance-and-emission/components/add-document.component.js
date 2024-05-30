@@ -15,11 +15,12 @@ import { AuthenticationContext } from "../../../services/authentication/authenti
 import { InsuranceDocumentContext } from "../../../services/documents/insurance-document.context";
 import { LoadingDiv } from "../../../components/loading/loading.component";
 import { EmissionDocumentContext } from "../../../services/documents/emission-document.context";
+import { toastMessage } from "../../../components/toast-message/toast.component";
 const DocumentContainer = styled(ScrollView)`
-  margin-top: 70px;
-  flex: 1;
+  margin-top: 60px;
+  padding-top: 10px;
+  height: 100%;
   margin-left: auto;
-
   margin-right: auto;
 `;
 
@@ -50,6 +51,8 @@ export const AddInsuranceDocument = ({ navigation }) => {
     createDocument,
     isLoading,
     deleteDocument,
+    setError,
+    error,
     getDocument,
     setInsuranceDocument,
     insuranceDocument = null,
@@ -91,13 +94,17 @@ export const AddInsuranceDocument = ({ navigation }) => {
   });
 
   const onSubmit = async (data) => {
+    setError(null);
     if (!expiryDate) {
       setExpiryDateError("Please select expiryDate");
       return;
     }
-    data.expiryDate = `${expiryDate} 23:59:59`;
+    data.expiryDate = `${expiryDate} 23:59:00`;
     const res = await createDocument(data);
     if (res === "success") {
+      insuranceDocument === null
+        ? toastMessage("Insurance document created successfully")
+        : toastMessage("Insurance document updated successfully");
       setInsuranceDocument(await getDocument());
       navigation.goBack();
     }
@@ -115,15 +122,19 @@ export const AddInsuranceDocument = ({ navigation }) => {
   const setDateFormat = (date) => {
     const currentDate = new Date(date);
     const month =
-      currentDate.getMonth() < 9
+      currentDate.getMonth() <= 9
         ? `0${currentDate.getMonth() + 1}`
         : currentDate.getMonth() + 1;
-    setExpiryDate(
-      `${month}/${currentDate.getDate()}/${currentDate.getFullYear()}`
-    );
+
+    const day =
+      currentDate.getDate() <= 9
+        ? `0${currentDate.getDate()}`
+        : currentDate.getDate();
+    setExpiryDate(`${month}/${day}/${currentDate.getFullYear()}`);
   };
 
   const onChange = (event, selectedDate) => {
+    console.log("Selected", selectedDate);
     const currentDate = selectedDate || expiryDate;
     // setShowDatePicker(Platform.OS === "ios");
 
@@ -139,29 +150,39 @@ export const AddInsuranceDocument = ({ navigation }) => {
     };
     getDoc();
     const setMiniumDate = () => {
-      let minDate = new Date();
-      minDate.setDate(minDate.getDate() + 2);
+      let min = new Date();
+      min.setDate(min.getDate() + 2);
 
-      setMinDate(minDate);
+      setMinDate(min);
     };
     // getDocument(headerToken, setInsurance);
     setMiniumDate();
-    if (insuranceDocument !== null) setDateFormat(insuranceDocument.expiryDate);
+    if (insuranceDocument !== null) {
+      const d = new Date(insuranceDocument.expiryDate);
+      // d.setDate(d.getDate() - 1);
+      setDateFormat(d);
+    }
+    () => setError(null);
   }, []);
   return !isDivLoading ? (
     <DocumentContainer showsVerticalScrollIndicator={false}>
       <Spacer size="large">
         <InputController
           label="Insurance Company Name(Required)*"
-          rules={{ required: true }}
+          rules={{ required: true, pattern: /^[a-zA-Z0-9_ ]*$/ }}
           name="insuranceCompanyName"
+          placeholder="Oriental"
           placeValue={setPlaceValue}
           divide={false}
           text={true}
           control={control}
         />
         {errors.insuranceCompanyName && (
-          <Text variant="error">Please enter the insurance company name</Text>
+          <Text variant="error">
+            {errors.insuranceCompanyName.type
+              ? "Please enter the insurance company name"
+              : "Please enter the correct insurance company name"}
+          </Text>
         )}
       </Spacer>
       <Spacer size="large">
@@ -172,6 +193,7 @@ export const AddInsuranceDocument = ({ navigation }) => {
             pattern: /^[A-Z]{2}[0-9]{2}[A-Z]{2}[0-9]{4}$/,
           }}
           name="registrationNo"
+          placeholder="KA20HA2021"
           placeValue={setPlaceValue}
           divide={false}
           text={true}
@@ -193,6 +215,7 @@ export const AddInsuranceDocument = ({ navigation }) => {
             pattern: /[0-9]{6}\/[0-9]{2}\/[0-9]{4}\/[0-9]{4}$/,
           }}
           name="policyNo"
+          placeholder="e.g 192939/28/2021/2222"
           placeValue={setPlaceValue}
           divide={false}
           text={true}
@@ -206,24 +229,29 @@ export const AddInsuranceDocument = ({ navigation }) => {
           </Text>
         )}
       </Spacer>
-      <Spacer size="large">
+      <Spacer>
         <InputController
-          label="Insured's Name(Required)*"
-          rules={{ required: true }}
+          label="Insured's name(Required)*"
+          rules={{ required: true, pattern: /^[a-zA-Z_ ]*$/ }}
           name="insuredName"
+          placeholder="e.g Virat"
           placeValue={setPlaceValue}
           divide={false}
           text={true}
           control={control}
         />
         {errors.insuredName && (
-          <Text variant="error">Please enter the Insured's Name</Text>
+          <Text variant="error">
+            {errors.insuredName.type === "required"
+              ? "Please enter the insurred's name"
+              : "Please enter only alphabet letters"}
+          </Text>
         )}
       </Spacer>
       <Spacer size="large">
         <DateView>
           <DateInputController
-            label=" Expiry Date(DD:MM:YYYY)(Required)*"
+            label=" Expiry Date(MM:DD:YYYY)(Required)*"
             rules={{ required: false }}
             name="expiryDate"
             value={expiryDate ? expiryDate : null}
@@ -256,7 +284,12 @@ export const AddInsuranceDocument = ({ navigation }) => {
           <Text variant="error">Please select the insurance expiry date</Text>
         )}
       </Spacer>
-
+      {error && (
+        <Spacer position="top" size="large">
+          <Text variant="error">{`${error.split(".")[0]}.`}</Text>
+          <Text variant="error">{`${error.split(".")[1]}`}</Text>
+        </Spacer>
+      )}
       <Spacer size="medium">
         {!isLoading ? (
           <DocumentButton mode="contained" onPress={handleSubmit(onSubmit)}>
@@ -289,6 +322,8 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
     createDocument,
     isLoading,
     deleteDocument,
+    error,
+    setError,
     getDocument,
     setEmissionDocument,
     emissionDocument = null,
@@ -316,7 +351,7 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
         emissionDocument !== null
           ? emissionDocument.registrationNo
           : "KA21HA2021",
-      puucNo: emissionDocument !== null ? emissionDocument.puucNo : "43666326",
+      puucNo: emissionDocument !== null ? emissionDocument.puucNo : "P43666326",
       customerName:
         emissionDocument !== null ? emissionDocument.customerName : "Virat",
       expiryDate: emissionDocument !== null ? emissionDocument.expiryDate : "",
@@ -324,13 +359,17 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
   });
 
   const onSubmit = async (data) => {
+    setError(null);
     if (!expiryDate) {
       setExpiryDateError("Please select expiryDate");
       return;
     }
-    data.expiryDate = `${expiryDate} 23:59:59`;
+    data.expiryDate = `${expiryDate} 23:58:00`;
     const res = await createDocument(data);
     if (res === "success") {
+      emissionDocument === null
+        ? toastMessage("Emission document created successfully")
+        : toastMessage("Emission document updated successfully");
       setEmissionDocument(await getDocument());
       navigation.goBack();
     }
@@ -346,14 +385,17 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
     ]);
 
   const setDateFormat = (date) => {
+    console.log("SET", date);
     const currentDate = new Date(date);
     const month =
       currentDate.getMonth() < 9
         ? `0${currentDate.getMonth() + 1}`
         : currentDate.getMonth() + 1;
-    setExpiryDate(
-      `${month}/${currentDate.getDate()}/${currentDate.getFullYear()}`
-    );
+    const day =
+      currentDate.getDate() < 9
+        ? `0${currentDate.getDate()}`
+        : currentDate.getDate();
+    setExpiryDate(`${month}/${day}/${currentDate.getFullYear()}`);
   };
 
   const onChange = (event, selectedDate) => {
@@ -372,14 +414,19 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
     };
     getDoc();
     const setMiniumDate = () => {
-      let minDate = new Date();
-      minDate.setDate(minDate.getDate() + 2);
+      let min = new Date();
+      min.setDate(min.getDate() + 2);
 
-      setMinDate(minDate);
+      setMinDate(min);
     };
     // getDocument(headerToken, setEmission);
     setMiniumDate();
-    if (emissionDocument !== null) setDateFormat(emissionDocument.expiryDate);
+    if (emissionDocument !== null) {
+      const d = new Date(emissionDocument.expiryDate);
+      // d.setDate(d.getDate() - 1);
+      setDateFormat(d);
+    }
+    () => setError(null);
   }, []);
 
   return !isDivLoading ? (
@@ -387,6 +434,7 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
       <Spacer size="large">
         <InputController
           label="Vehicle Reg No(Required)*"
+          placeholder="e.g KA21HA2021"
           rules={{ required: true }}
           name="registrationNo"
           placeValue={setPlaceValue}
@@ -395,41 +443,55 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
           control={control}
         />
         {errors.regNo && (
-          <Text variant="error">Please enter the vehicle reg no</Text>
+          <Text variant="error">
+            {errors.regNo.type === "required"
+              ? "Please enter the reg no"
+              : "Please enter valid registration no"}
+          </Text>
         )}
       </Spacer>
       <Spacer size="large">
         <InputController
           label="PUUC No(Required)*"
-          rules={{ required: true }}
+          rules={{ required: true, pattern: /^[a-z0-9]+$/i }}
           name="puucNo"
+          placeholder="e.g P43666326"
           placeValue={setPlaceValue}
           divide={false}
           text={true}
           control={control}
         />
         {errors.puucNo && (
-          <Text variant="error">Please enter the puuc number</Text>
+          <Text variant="error">
+            {errors.puucNo.type === "required"
+              ? "Please enter the puuc number"
+              : "Please enter a valid puuc NO"}
+          </Text>
         )}
       </Spacer>
-      <Spacer size="large">
+      <Spacer size="larger">
         <InputController
-          label="Customer's Name(Required)*"
-          rules={{ required: true }}
+          label="Customer name(Required)*"
+          rules={{ required: true, pattern: /^[a-zA-Z_ ]*$/ }}
           name="customerName"
+          placeholder="e.g Virat"
           placeValue={setPlaceValue}
           divide={false}
           text={true}
           control={control}
         />
         {errors.customerName && (
-          <Text variant="error">Please enter the customer's name</Text>
+          <Text variant="error">
+            {errors.customerName.type === "required"
+              ? "Please enter the customer name"
+              : "Please enter only alphabet letters"}
+          </Text>
         )}
       </Spacer>
       <Spacer size="large">
         <DateView>
           <DateInputController
-            label=" Expiry Date(DD:MM:YYYY)(Required)*"
+            label=" Expiry Date(MM:DD:YYYY)(Required)*"
             rules={{ required: false }}
             name="expiryDate"
             value={expiryDate ? expiryDate : null}
@@ -462,7 +524,12 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
           <Text variant="error">Please select the emission expiry date</Text>
         )}
       </Spacer>
-
+      {error && (
+        <Spacer position="top" size="large">
+          <Text variant="error">{`${error.split(".")[0]}.`}</Text>
+          <Text variant="error">{`${error.split(".")[1]}`}</Text>
+        </Spacer>
+      )}
       <Spacer size="medium">
         {!isLoading ? (
           <DocumentButton mode="contained" onPress={handleSubmit(onSubmit)}>

@@ -15,6 +15,7 @@ import { ProfilePhotoContainer } from "../../profile/components/profile-photo-co
 
 const Container = styled(ScrollView)`
   margin-top: 60px;
+  padding-top: 10px;
   height: 100%;
   padding: ${(props) => props.theme.space[2]};
   margin-bottom: 30px;

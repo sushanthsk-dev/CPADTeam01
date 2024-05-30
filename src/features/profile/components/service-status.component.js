@@ -34,9 +34,8 @@ const SpacerView = styled.View`
   justify-content: space-between;
 `;
 export const ServiceStatus = ({ orderStatus = "Ordered" }) => {
-  const status = ["Ordered", "Pickedup", "Servicing", "Deliveried"];
+  const status = ["Ordered", "Pickedup", "Serviced", "Deliveried"];
   const currentStatus = status.indexOf(orderStatus);
-
   return (
     <ServiceStatusContainer>
       <StatusCard>
@@ -63,7 +62,7 @@ export const ServiceStatus = ({ orderStatus = "Ordered" }) => {
           <Text variant="caption">Pickedup</Text>
         </Spacer>
         <Spacer position="left" size="medium">
-          <Text variant="caption">Servicing</Text>
+          <Text variant="caption">Serviced</Text>
         </Spacer>
         <Text variant="caption">Deliveried</Text>
       </SpacerView>

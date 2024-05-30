@@ -6,7 +6,6 @@ import { Text } from "../../../components/typography/text.component";
 
 const FeatureCardContainer = styled(Card)`
   width: 156px;
-  padding: ${(props) => props.theme.space[2]};
   margin: ${(props) => props.theme.space[2]};
   display: flex;
   justify-content: center;
@@ -14,19 +13,19 @@ const FeatureCardContainer = styled(Card)`
 `;
 
 const FeatureCardCover = styled(Card.Cover)`
-  height: 90px;
-  width: 90px;
-  margin: auto;
+  height: 120px;
+  width: 156px;
 `;
-export const FeatureCard = ({ title }) => {
+export const FeatureCard = ({
+  title,
+  imgSrc = "https://picsum.photos/700",
+}) => {
   return (
     <FeatureCardContainer elevation={5}>
-      <Spacer position="top" size="large">
-        <FeatureCardCover source={require("../../../../assets/icon.png")} />
-      </Spacer>
-      <Spacer position="top" size="large">
+      <FeatureCardCover source={{ uri: imgSrc }} />
+      <Spacer position="top" size="medium">
         <Spacer position="top" size="medium">
-          <Spacer position="bottom" size="medium">
+          <Spacer position="bottom" size="large">
             <Text variant="subTitle">{title}</Text>
           </Spacer>
         </Spacer>

@@ -11,12 +11,13 @@ import { ManageProfile } from "../components/manage-profile.component";
 const Tab = createMaterialTopTabNavigator();
 
 const OrderContainer = styled.View`
-  margin-top: 70px;
+  margin-top: 60px;
+  padding-top: 10px;
   flex: 1;
 `;
 
 export const ManageProfileScreen = ({ navigation, route }) => {
-  const { name = "agent" } = route.params;
+  const { role = "agent" } = route.params;
 
-  return <ManageProfile navigation={navigation} name={name} />;
+  return <ManageProfile navigation={navigation} role={role} />;
 };

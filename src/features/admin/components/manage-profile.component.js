@@ -9,11 +9,14 @@ import { Header } from "../../../components/header/header.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { ProfileCard } from "../components/profile-card.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
+import { AgentMechanicContext } from "../../../services/agent-mechanic/agent-mechanic.context";
+import { LoadingDiv } from "../../../components/loading/loading.component";
+import { NoOrderContainer } from "../../../components/no-order/no-order.component";
 
 const Tab = createMaterialTopTabNavigator();
 
-const OrderContainer = styled.View`
-  margin-top: 70px;
+const Container = styled.View`
+  margin-top: 56px;
   flex: 1;
 `;
 
@@ -35,38 +38,47 @@ const AddButton = styled(TouchableOpacity)`
   right: 24px;
 `;
 
-export const ManageProfile = ({ navigation, name }) => {
-  const { headerToken } = React.useContext(AuthenticationContext);
-  const [user, setUser] = useState([]);
+export const ManageProfile = ({ navigation, role }) => {
+  const {
+    getAgentMechanic,
+    agentMechanic = null,
+    isLoading,
+  } = React.useContext(AgentMechanicContext);
+  //  const [user, setUser] = useState([]);
+
+  useEffect(() => {
+    agentMechanic;
+    getAgentMechanic(role);
+  }, []);
 
   const ActiveUser = () => {
-    return (
+    return isLoading === true ? (
+      <LoadingDiv />
+    ) : (
       <>
         <CardContainer>
-          {user ? (
-            user.map((u) => {
+          {agentMechanic !== null &&
+            agentMechanic.map((u) => {
               return (
                 u.active === true && (
                   <TouchableOpacity
                     key={u._id}
                     onPress={() =>
                       navigation.navigate("ProfileViewScreen", {
-                        name: name,
+                        role: role,
                         user: u,
                       })
                     }
                   >
-                    <ProfileCard key={u._id} name={u.role} user={u} />
+                    <ProfileCard key={u._id} role={u.role} user={u} />
                   </TouchableOpacity>
                 )
               );
-            })
-          ) : (
-            <ProfileCard name={name} />
-          )}
+            })}
+          <NoOrderContainer text={`No ${role}`} />
         </CardContainer>
         <AddButton
-          onPress={() => navigation.navigate("AddUserScreen", { name: name })}
+          onPress={() => navigation.navigate("AddUserScreen", { role: role })}
         >
           <AntDesign name="adduser" size={24} color="white" />
         </AddButton>
@@ -77,59 +89,54 @@ export const ManageProfile = ({ navigation, name }) => {
   const DeactivedUser = () => {
     return (
       <CardContainer>
-        {user ? (
-          user.map((u) => {
+        {agentMechanic !== null &&
+          agentMechanic.map((u) => {
             return (
               u.active === false && (
                 <TouchableOpacity
                   key={u._id}
                   onPress={() =>
                     navigation.navigate("ProfileViewScreen", {
-                      name: name,
+                      role: role,
                       user: u,
                     })
                   }
                 >
-                  <ProfileCard key={u._id} name={u.role} user={u} />
+                  <ProfileCard key={u._id} role={u.role} user={u} />
                 </TouchableOpacity>
               )
             );
-          })
-        ) : (
-          <ProfileCard name={name} />
-        )}
+          })}
+        <NoOrderContainer text={`No ${role}`} />
       </CardContainer>
     );
   };
 
-  const getUser = async () => {
-    try {
-      const res = await axios({
-        method: "GET",
-        url: `${IPADDRESS}/api/v1/admin?role=agent`,
-        headers: { Authorization: `Bearer ${headerToken}` },
-      });
-      setUser(res.data.data.doc);
-    } catch (e) {
-      console.log(e.response.data.message);
-    }
-  };
+  // const getUser = async () => {
+  //   try {
+  //     const res = await axios({
+  //       method: "GET",
+  //       url: `${IPADDRESS}/api/v1/admin?role=agent`,
+  //       headers: { Authorization: `Bearer ${headerToken}` },
+  //     });
+  //     setUser(res.data.data.doc);
+  //   } catch (e) {
+  //     console.log(e.response.data.message);
+  //   }
+  // };
 
   useEffect(() => {
-    getUser();
-    user.map((u) => {
-      console.log("Map", u.name);
-    });
+    // getUser();
   }, []);
   return (
     <SafeArea>
-      <Header toLeft={true} navigation={navigation} title={`Manage ${name}`} />
-      <OrderContainer>
+      <Header toLeft={true} navigation={navigation} title={`Manage ${role}`} />
+      <Container>
         <Tab.Navigator>
           <Tab.Screen
             name="Active"
             options={({ route }) => ({
-              tabBarLabel: `Active ${name}`,
+              tabBarLabel: `Active ${role}`,
             })}
             component={ActiveUser}
             initialParams={{ name: "activated" }}
@@ -137,13 +144,13 @@ export const ManageProfile = ({ navigation, name }) => {
           <Tab.Screen
             name="Deactived"
             options={({ route }) => ({
-              tabBarLabel: `Deactived ${name}`,
+              tabBarLabel: `Deactived ${role}`,
             })}
             component={DeactivedUser}
             initialParams={{ name: "deactivated" }}
           />
         </Tab.Navigator>
-      </OrderContainer>
+      </Container>
     </SafeArea>
   );
 };
