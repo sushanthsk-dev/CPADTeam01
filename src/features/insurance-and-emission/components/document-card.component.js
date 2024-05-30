@@ -40,8 +40,10 @@ const setDateFormat = (date) => {
 
 const differenceBetweenDates = (date) => {
   const currentDate = moment();
-  const exDate = moment(new Date(date), "MM/DD/YYYY");
-  console.log(currentDate, date);
+  const expiryDate = new Date(date);
+  expiryDate.setDate(expiryDate.getDate() + 1);
+  const exDate = moment(new Date(expiryDate), "MM/DD/YYYY");
+  console.log("DATE", currentDate);
   //const difference = exDate.getTime() - currentDate.getTime();
   return exDate.diff(currentDate, "days");
   //return Math.ceil(difference / (1000 * 60 * 60 * 24));

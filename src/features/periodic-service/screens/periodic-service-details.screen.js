@@ -70,7 +70,7 @@ export const PeriodicServiceDetails = ({ route, navigation }) => {
         </ImageCarousel>
         <PeriodicServiceDetailsTopContainer>
           <Spacer position="none">
-            <Text variant="title">Basic Service</Text>
+            <Text variant="title">{servicePlan.title }</Text>
           </Spacer>
           <SectionRight>
             <PriceText price={servicePlan.price} />
