@@ -12,13 +12,19 @@ import { Spacer } from "../../../components/spacer/spacer.component";
 import { InputController } from "../../../components/form-control/input-control.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 const CarContainer = styled.View`
-  margin-top: 70px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 `;
 const InputeContainer = styled.View`
   margin: auto;
 `;
 
 const AddressButton = styled(Button)`
+  width: 340px;
+`;
+
+const DropdownMenu = styled(Dropdown)`
   width: 340px;
 `;
 
@@ -158,33 +164,33 @@ export const MyCarScreen = ({ navigation, route }) => {
     <SafeArea>
       <Header title="My Car" toLeft={true} navigation={navigation} />
       <CarContainer>
-        <Spacer>
-          <Dropdown
-            label="Select car Model"
-            data={data}
-            value={carModel}
-            onChangeText={(value) => setCarModel(value)}
-          />
-          {errorCarModel === true && (
-            <Spacer position="left" size="large">
-              <Text variant="error">Please select car model</Text>
-            </Spacer>
-          )}
-        </Spacer>
-        <Spacer>
-          <Dropdown
-            label="Fuel type"
-            data={rawData}
-            value={fuelType}
-            onChangeText={(value) => setfuelType(value)}
-          />
-          {errorFuelType === true && (
-            <Spacer position="left" size="large">
-              <Text variant="error">Please select fuel type</Text>
-            </Spacer>
-          )}
-        </Spacer>
         <InputeContainer>
+          <Spacer size="medium" position="bottom">
+            <DropdownMenu
+              label="Select car Model"
+              data={data}
+              value={carModel}
+              onChangeText={(value) => setCarModel(value)}
+            />
+            {errorCarModel === true && (
+              <Spacer position="left" size="large">
+                <Text variant="error">Please select car model</Text>
+              </Spacer>
+            )}
+          </Spacer>
+          <Spacer size="large">
+            <DropdownMenu
+              label="Fuel type"
+              data={rawData}
+              value={fuelType}
+              onChangeText={(value) => setfuelType(value)}
+            />
+            {errorFuelType === true && (
+              <Spacer position="left" size="large">
+                <Text variant="error">Please select fuel type</Text>
+              </Spacer>
+            )}
+          </Spacer>
           <Spacer size="large">
             <InputController
               label="Reg No(Required)*"
@@ -206,7 +212,7 @@ export const MyCarScreen = ({ navigation, route }) => {
               </Text>
             )}
           </Spacer>
-          <Spacer size="four_large">
+          <Spacer size="large">
             <InputController
               label="Model Year(Required)*"
               rules={{ required: true, pattern: /^(199\d|200\d|2021)$/ }}

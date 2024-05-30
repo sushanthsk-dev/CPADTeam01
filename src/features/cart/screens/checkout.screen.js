@@ -78,7 +78,7 @@ export const CheckoutScreen = ({ navigation, route }) => {
 
   const { time, addTime, removeTime } = React.useContext(TimeContext);
   const { address } = React.useContext(AddressContext);
-
+  console.log(address);
   const { servicePlan } = route.params;
 
   const setData = () => {
@@ -242,7 +242,10 @@ export const CheckoutScreen = ({ navigation, route }) => {
               )}
             </>
           ) : (
-            <AddressCard navigation={navigation} address={address} />
+            <AddressCard
+              navigation={navigation}
+              address={{ ...address, name: user.name }}
+            />
           )}
         </AddressContainer>
         <BillContainer>

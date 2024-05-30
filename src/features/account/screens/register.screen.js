@@ -19,8 +19,10 @@ import {
   ErrorContainer,
   LinkText,
   LogoImageContainer,
+  RegisterAccountContainer,
   Title,
 } from "../components/account.styles";
+import { ForgotPasswordContainer } from "./login.screen";
 
 const SignInContainer = styled.View`
   width: 100%;
@@ -69,14 +71,16 @@ export const RegisterScreen = ({ navigation }) => {
   return (
     <AccountBackground>
       <LogoImageContainer source={require("../../../../assets/logo1.png")} />
-      <AccountContainer>
-        <AuthInput
-          label="Name"
-          value={name}
-          textContentType="name"
-          onChangeText={(n) => setName(n)}
-        />
-        {nameError && <Text variant="error">{nameError}</Text>}
+      <RegisterAccountContainer>
+        <Spacer>
+          <AuthInput
+            label="Name"
+            value={name}
+            textContentType="name"
+            onChangeText={(n) => setName(n)}
+          />
+          {nameError && <Text variant="error">{nameError}</Text>}
+        </Spacer>
         <Spacer size="large">
           <AuthInput
             label="Email"
@@ -101,7 +105,7 @@ export const RegisterScreen = ({ navigation }) => {
         </Spacer>
         <Spacer size="large">
           <AuthInput
-            label="Repeat Password"
+            label="Confirm Password"
             value={repeatedpassword}
             textContentType="password"
             secureTextEntry={true}
@@ -140,7 +144,7 @@ export const RegisterScreen = ({ navigation }) => {
             <LinkText variant="body">Sign in</LinkText>
           </TouchableWithoutFeedback>
         </SignInContainer>
-      </AccountContainer>
+      </RegisterAccountContainer>
     </AccountBackground>
   );
 };

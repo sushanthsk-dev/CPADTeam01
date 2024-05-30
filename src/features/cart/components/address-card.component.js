@@ -24,7 +24,7 @@ const Phoneno = styled.View`
 `;
 
 export const AddressCard = ({ navigation, address = {}, edit = true }) => {
-
+  console.log("ADD", address);
   return (
     <AddressCardContainer>
       {!!edit && (
@@ -38,7 +38,7 @@ export const AddressCard = ({ navigation, address = {}, edit = true }) => {
         </EditButton>
       )}
       <Spacer position="bottom">
-        <Text variant="checkoutTitle">Virat</Text>
+        <Text variant="checkoutTitle">{address.name}</Text>
       </Spacer>
       <Text>{address.address.trim()}</Text>
       <Text>{`${address.city} ${address.pincode}, ${address.state}`}</Text>

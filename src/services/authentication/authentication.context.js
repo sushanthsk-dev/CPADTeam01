@@ -1,7 +1,6 @@
 import React, { useState, createContext } from "react";
 import axios from "axios";
 import { IPADDRESS } from "../../utils/env";
-import { loginRequest } from "./authentication.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthenticationContext = createContext();
@@ -48,7 +47,6 @@ export const AuthenticationContextProvider = ({ children }) => {
 
   const onLogin = async (email, password, isAdmin = false) => {
     setError(null);
-    console.log(IPADDRESS);
     setIsLoading(true);
     try {
       const url =
@@ -105,7 +103,6 @@ export const AuthenticationContextProvider = ({ children }) => {
           url: `${IPADDRESS}/api/v1/admin/isloggedin`,
           headers: { Authorization: `Bearer ${value.token}` },
         });
-        console.log("HE:", value);
         const res =
           userRes.data.data !== null ? userRes.data.data : adminRes.data.data;
         setHeaderToken(value.token);
@@ -113,7 +110,7 @@ export const AuthenticationContextProvider = ({ children }) => {
         setIsLoading(false);
         return user;
       } catch (e) {
-        console.log(e);
+        console.log("E", e);
         setIsLoading(false);
       }
     }

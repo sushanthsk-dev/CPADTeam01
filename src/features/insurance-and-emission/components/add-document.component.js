@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components/native";
 import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
-import { CheckBox, ScrollView, TouchableOpacity } from "react-native";
+import { Alert, ScrollView, TouchableOpacity } from "react-native";
 import { Button, ActivityIndicator, Colors } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -12,6 +12,9 @@ import { InputController } from "../../../components/form-control/input-control.
 import { onChange } from "react-native-reanimated";
 import { IPADDRESS } from "../../../utils/env";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
+import { InsuranceDocumentContext } from "../../../services/documents/insurance-document.context";
+import { LoadingDiv } from "../../../components/loading/loading.component";
+import { EmissionDocumentContext } from "../../../services/documents/emission-document.context";
 const DocumentContainer = styled(ScrollView)`
   margin-top: 70px;
   flex: 1;
@@ -43,14 +46,24 @@ const DateInputController = styled(InputController)`
 
 export const AddInsuranceDocument = ({ navigation }) => {
   const { headerToken } = React.useContext(AuthenticationContext);
-  const [expiryDate, setExpiryDate] = useState();
+  const {
+    createDocument,
+    isLoading,
+    deleteDocument,
+    getDocument,
+    setInsuranceDocument,
+    insuranceDocument = null,
+    isDeleteLoading,
+  } = React.useContext(InsuranceDocumentContext);
+
+  const [expiryDate, setExpiryDate] = useState(null);
+
   const [expiryDateError, setExpiryDateError] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(null);
   const [minDate, setMinDate] = useState(null);
+  // const { insuranceDocument = null } = user;
+  const [isDivLoading, setIsDivLoading] = useState(true);
 
-  const isLoading = false;
-  const insurance = null;
-  // const insurance = null;
   const {
     register,
     setPlaceValue,
@@ -61,13 +74,19 @@ export const AddInsuranceDocument = ({ navigation }) => {
   } = useForm({
     defaultValues: {
       insuranceCompanyName:
-        insurance !== null
-          ? insurance.insuranceCompanyName
+        insuranceDocument !== null
+          ? insuranceDocument.insuranceCompanyName
           : "Oriental Company",
-      policyNo: insurance !== null ? insurance.policyNo : "192939/28/2021/2222",
+      policyNo:
+        insuranceDocument !== null
+          ? insuranceDocument.policyNo
+          : "192939/28/2021/2222",
       registrationNo:
-        insurance !== null ? insurance.registrationNo : "KA21HA2020",
-      insuredName: insurance !== null ? insurance.insuredName : "Sushanth",
+        insuranceDocument !== null
+          ? insuranceDocument.registrationNo
+          : "KA21HA2020",
+      insuredName:
+        insuranceDocument !== null ? insuranceDocument.insuredName : "",
     },
   });
 
@@ -76,32 +95,25 @@ export const AddInsuranceDocument = ({ navigation }) => {
       setExpiryDateError("Please select expiryDate");
       return;
     }
-    data.expiryDate = expiryDate;
-    console.log(data);
-
-    try {
-      const res = await axios({
-        method: "POST",
-        headers: { Authorization: `Bearer ${headerToken}` },
-        url: `${IPADDRESS}/api/v1/document/insurance`,
-        data: {
-          insuranceDocument: data,
-        },
-      });
-      if (res.data.status === "success") {
-        console.log("success");
-      }
-      console.log(res.data.status);
-    } catch (e) {
-      console.log(e.response.data);
+    data.expiryDate = `${expiryDate} 23:59:59`;
+    const res = await createDocument(data);
+    if (res === "success") {
+      setInsuranceDocument(await getDocument());
+      navigation.goBack();
     }
   };
-  console.log(errors);
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || expiryDate;
-    // setShowDatePicker(Platform.OS === "ios");
-    console.log(currentDate);
-    setShowDatePicker(false);
+
+  const deleteConfirmAlert = () =>
+    Alert.alert("Delete", "Are you sure you want delete", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => deleteDocument(navigation) },
+    ]);
+
+  const setDateFormat = (date) => {
+    const currentDate = new Date(date);
     const month =
       currentDate.getMonth() < 9
         ? `0${currentDate.getMonth() + 1}`
@@ -111,17 +123,33 @@ export const AddInsuranceDocument = ({ navigation }) => {
     );
   };
 
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || expiryDate;
+    // setShowDatePicker(Platform.OS === "ios");
+
+    setShowDatePicker(false);
+    setDateFormat(currentDate);
+  };
+
   useEffect(() => {
+    setTimeout(() => setIsDivLoading(false), 100);
+    const getDoc = async () => {
+      const res = await getDocument();
+      setInsuranceDocument(res);
+    };
+    getDoc();
     const setMiniumDate = () => {
       let minDate = new Date();
-      minDate.setDate(minDate.getDate() + 3);
-      console.log(minDate);
+      minDate.setDate(minDate.getDate() + 2);
+
       setMinDate(minDate);
     };
+    // getDocument(headerToken, setInsurance);
     setMiniumDate();
+    if (insuranceDocument !== null) setDateFormat(insuranceDocument.expiryDate);
   }, []);
-  return (
-    <DocumentContainer>
+  return !isDivLoading ? (
+    <DocumentContainer showsVerticalScrollIndicator={false}>
       <Spacer size="large">
         <InputController
           label="Insurance Company Name(Required)*"
@@ -231,30 +259,50 @@ export const AddInsuranceDocument = ({ navigation }) => {
 
       <Spacer size="medium">
         {!isLoading ? (
-          <>
-            <DocumentButton mode="contained" onPress={handleSubmit(onSubmit)}>
-              Save Insurance Details
-            </DocumentButton>
-            <DocumentButton
-              mode="contained"
-              onPress={handleSubmit(onSubmit)}
-              color={Colors.red900}
-              disabled={!insurance ? true : false}
-            >
-              Delete Insurance Details
-            </DocumentButton>
-          </>
+          <DocumentButton mode="contained" onPress={handleSubmit(onSubmit)}>
+            Save Insurance Details
+          </DocumentButton>
+        ) : (
+          <ActivityIndicator animating={true} color={Colors.blue300} />
+        )}
+        {!isDeleteLoading ? (
+          <DocumentButton
+            mode="contained"
+            onPress={deleteConfirmAlert}
+            color={Colors.red900}
+            disabled={insuranceDocument === null || isLoading ? true : false}
+          >
+            Delete Insurance Details
+          </DocumentButton>
         ) : (
           <ActivityIndicator animating={true} color={Colors.blue300} />
         )}
       </Spacer>
     </DocumentContainer>
+  ) : (
+    <LoadingDiv />
   );
 };
 
 export const AddEmissionDocument = ({ emission = false, navigation }) => {
-  const [isAlertSelected, setAlertSelection] = React.useState(false);
-  const isLoading = false;
+  const {
+    createDocument,
+    isLoading,
+    deleteDocument,
+    getDocument,
+    setEmissionDocument,
+    emissionDocument = null,
+    isDeleteLoading,
+  } = React.useContext(EmissionDocumentContext);
+
+  const [expiryDate, setExpiryDate] = useState(null);
+
+  const [expiryDateError, setExpiryDateError] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(null);
+  const [minDate, setMinDate] = useState(null);
+  // const { emissionDocument = null } = user;
+  const [isDivLoading, setIsDivLoading] = useState(true);
+
   const {
     register,
     setPlaceValue,
@@ -264,27 +312,83 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      regNo: emission !== null ? emission.address : "",
-      puucNo: emission !== null ? emission.puucNo : "",
-      customerName: emission !== null ? emission.customerName : "",
-      expiryDate: emission !== null ? emission.expiryDate : "",
+      registrationNo:
+        emissionDocument !== null
+          ? emissionDocument.registrationNo
+          : "KA21HA2021",
+      puucNo: emissionDocument !== null ? emissionDocument.puucNo : "43666326",
+      customerName:
+        emissionDocument !== null ? emissionDocument.customerName : "Virat",
+      expiryDate: emissionDocument !== null ? emissionDocument.expiryDate : "",
     },
   });
 
-  const onSubmit = (data) => {
-    addAddress(data);
-    setTimeout(() => {
-      navigation.navigate("CheckoutScreen");
-    }, 100);
+  const onSubmit = async (data) => {
+    if (!expiryDate) {
+      setExpiryDateError("Please select expiryDate");
+      return;
+    }
+    data.expiryDate = `${expiryDate} 23:59:59`;
+    const res = await createDocument(data);
+    if (res === "success") {
+      setEmissionDocument(await getDocument());
+      navigation.goBack();
+    }
   };
 
-  return (
+  const deleteConfirmAlert = () =>
+    Alert.alert("Delete", "Are you sure you want delete", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => deleteDocument(navigation) },
+    ]);
+
+  const setDateFormat = (date) => {
+    const currentDate = new Date(date);
+    const month =
+      currentDate.getMonth() < 9
+        ? `0${currentDate.getMonth() + 1}`
+        : currentDate.getMonth() + 1;
+    setExpiryDate(
+      `${month}/${currentDate.getDate()}/${currentDate.getFullYear()}`
+    );
+  };
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || expiryDate;
+    // setShowDatePicker(Platform.OS === "ios");
+
+    setShowDatePicker(false);
+    setDateFormat(currentDate);
+  };
+
+  useEffect(() => {
+    setTimeout(() => setIsDivLoading(false), 100);
+    const getDoc = async () => {
+      const res = await getDocument();
+      setEmissionDocument(res);
+    };
+    getDoc();
+    const setMiniumDate = () => {
+      let minDate = new Date();
+      minDate.setDate(minDate.getDate() + 2);
+
+      setMinDate(minDate);
+    };
+    // getDocument(headerToken, setEmission);
+    setMiniumDate();
+    if (emissionDocument !== null) setDateFormat(emissionDocument.expiryDate);
+  }, []);
+
+  return !isDivLoading ? (
     <DocumentContainer>
       <Spacer size="large">
         <InputController
           label="Vehicle Reg No(Required)*"
           rules={{ required: true }}
-          name="regNo"
+          name="registrationNo"
           placeValue={setPlaceValue}
           divide={false}
           text={true}
@@ -318,48 +422,70 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
           text={true}
           control={control}
         />
-        {errors.insuredName && (
+        {errors.customerName && (
           <Text variant="error">Please enter the customer's name</Text>
         )}
       </Spacer>
       <Spacer size="large">
-        <InputController
-          label=" Expiry Date(MM:DD:YY)(Required)*"
-          rules={{ required: true }}
-          name="expiryDate"
-          placeValue={setPlaceValue}
-          divide={false}
-          text={true}
-          readOnly={false}
-          control={control}
-        />
-        {errors.expiryDate && (
-          <Text variant="error">Please enter the expiry date</Text>
+        <DateView>
+          <DateInputController
+            label=" Expiry Date(DD:MM:YYYY)(Required)*"
+            rules={{ required: false }}
+            name="expiryDate"
+            value={expiryDate ? expiryDate : null}
+            readOnly={true}
+            placeValue={setPlaceValue}
+            divide={false}
+            text={true}
+            control={control}
+          />
+          <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
+            <MaterialIcons name="date-range" size={24} color="black" />
+          </TouchableOpacity>
+        </DateView>
+        {showDatePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={expiryDate ? new Date(expiryDate) : new Date()}
+            mode="date"
+            minimumDate={minDate}
+            is24Hour={true}
+            display="default"
+            onTouchStart={() => console.log("HE")}
+            onChange={(event, selectedDate) => {
+              onChange(event, selectedDate);
+              setExpiryDateError(null);
+            }}
+          />
+        )}
+        {expiryDateError && (
+          <Text variant="error">Please select the emission expiry date</Text>
         )}
       </Spacer>
-      <CheckBoxView>
-        <CheckBox value={isAlertSelected} onValueChange={setAlertSelection} />
-        <Text variant="caption">Alert me before one week of expiry date</Text>
-      </CheckBoxView>
+
       <Spacer size="medium">
         {!isLoading ? (
-          <>
-            <DocumentButton mode="contained" onPress={handleSubmit(onSubmit)}>
-              Save Emission Details
-            </DocumentButton>
-            <DocumentButton
-              mode="contained"
-              onPress={handleSubmit(onSubmit)}
-              color={Colors.red900}
-              disabled={!emission ? true : false}
-            >
-              Delete Emission Details
-            </DocumentButton>
-          </>
+          <DocumentButton mode="contained" onPress={handleSubmit(onSubmit)}>
+            Save emission details
+          </DocumentButton>
+        ) : (
+          <ActivityIndicator animating={true} color={Colors.blue300} />
+        )}
+        {!isDeleteLoading ? (
+          <DocumentButton
+            mode="contained"
+            onPress={deleteConfirmAlert}
+            color={Colors.red900}
+            disabled={emissionDocument === null || isLoading ? true : false}
+          >
+            Delete emission details
+          </DocumentButton>
         ) : (
           <ActivityIndicator animating={true} color={Colors.blue300} />
         )}
       </Spacer>
     </DocumentContainer>
+  ) : (
+    <LoadingDiv />
   );
 };

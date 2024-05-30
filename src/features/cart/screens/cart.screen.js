@@ -58,11 +58,12 @@ export const CartScreen = ({ route, navigation }) => {
     if (!pincode) {
       return setPincodeError("Please enter the pincode");
     }
+
     const value = validatePin(pincode);
     if (!value) {
       return setPincodeError("Enter the correct pincode format");
     }
-    if (pincode != 574227) {
+    if (parseInt(pincode) !== 574227) {
       setDisable(true);
       return setPincodeError(
         "Sorry the service is not available in the entered pincode"

@@ -15,24 +15,28 @@ export const AddressContextProvider = ({ children }) => {
     setAddress(address);
   };
   const loadAddress = async () => {
-    try {
-      console.log("Header", headerToken);
-      const url =
-        user.role === "user"
-          ? `${IPADDRESS}/api/v1/users/me`
-          : `${IPADDRESS}/api/v1/admin/me`;
-      const res = await axios({
-        method: "GET",
-        headers: { Authorization: `Bearer ${headerToken}` },
-        url: url,
-      });
-      setAddress({
-        ...res.data.data.doc.address,
-        phoneno: res.data.data.doc.phoneno,
-      });
-    } catch (e) {
-      console.log("JWT", e.response.data.message);
-      setError(e.response.data.message);
+    if (headerToken) {
+      try {
+        console.log("Header", headerToken);
+        const url =
+          user.role === "user"
+            ? `${IPADDRESS}/api/v1/users/me`
+            : `${IPADDRESS}/api/v1/admin/me`;
+        const res = await axios({
+          method: "GET",
+          headers: { Authorization: `Bearer ${headerToken}` },
+          url: url,
+        });
+        if (res.data.data.doc.address !== undefined) {
+          setAddress({
+            ...res.data.data.doc.address,
+            phoneno: res.data.data.doc.phoneno,
+          });
+        }
+      } catch (e) {
+        console.log("JWT", e.response.data.message);
+        setError(e.response.data.message);
+      }
     }
   };
 

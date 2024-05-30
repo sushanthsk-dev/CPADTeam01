@@ -45,9 +45,13 @@ export const AddressScreen = ({ navigation }) => {
     defaultValues: {
       address: address ? address.address : "",
       city: address ? address.city : "",
-      pincode: address ? address.pincode : "",
+      pincode: address ? address.pincode : "574227",
       state: address ? address.state : "",
-      phoneno: address ? address.phoneno.toString() : "",
+      phoneno: address
+        ? address.phoneno
+          ? address.phoneno.toString()
+          : ""
+        : "",
     },
   });
 
@@ -88,7 +92,6 @@ export const AddressScreen = ({ navigation }) => {
                   rules={{ required: true }}
                   name="pincode"
                   readOnly={true}
-                  defaultValue={574227}
                   divide={true}
                   text={false}
                   control={control}

@@ -16,41 +16,50 @@ import { AddDocumentScreen } from "../../features/insurance-and-emission/screens
 import { MapScreen } from "../../features/map/screens/map.screen";
 import { MechanicScreen } from "../../features/mechanic/screens/mechanic.screen";
 import { MyCarScreen } from "../../features/profile/screens/my-car.screen";
-import { OrderSummary } from "../../features/profile/screens/order-summary";
+import { OrderSummary } from "../../features/profile/screens/order-summary.screen";
+import { InsuranceDocumentContextProvider } from "../../services/documents/insurance-document.context";
+import { EmissionDocumentContextProvider } from "../../services/documents/emission-document.context";
 
 const HomeStack = createStackNavigator();
 export const HomeNavigator = () => {
   return (
-    <HomeStack.Navigator
-      headerMode="none"
-      screenOptions={{ ...TransitionPresets.ScaleFromCenterAndroid }}
-    >
-      <HomeStack.Screen
-        name="HomeScreen"
-        component={HomeScreen}
-        screenOptions={{ ...TransitionPresets.ModalSlideFromBottomIOS }}
-      />
+    <InsuranceDocumentContextProvider>
+      <EmissionDocumentContextProvider>
+        <HomeStack.Navigator
+          headerMode="none"
+          screenOptions={{ ...TransitionPresets.ScaleFromCenterAndroid }}
+        >
+          <HomeStack.Screen
+            name="HomeScreen"
+            component={HomeScreen}
+            screenOptions={{ ...TransitionPresets.ModalSlideFromBottomIOS }}
+          />
 
-      <HomeStack.Screen name="CarScreen" component={MyCarScreen} />
-      <HomeStack.Screen
-        name="PeriodicServiceScreen"
-        component={PeriodicServiceScreen}
-      />
-      <HomeStack.Screen
-        name="PeriodicServiceDetails"
-        component={PeriodicServiceDetails}
-      />
-      <HomeStack.Screen name="AddressScreen" component={AddressScreen} />
-      <HomeStack.Screen name="CartScreenInside" component={CartScreen} />
-      <HomeStack.Screen name="CheckoutScreen" component={CheckoutScreen} />
-      <HomeStack.Screen name="OrderScreen" component={OrderScreen} />
-      <HomeStack.Screen name="OrderSummaryScreen" component={OrderSummary} />
-      <HomeStack.Screen name="MapScreen" component={MapScreen} />
-      <HomeStack.Screen name="DocumentScreen" component={DocumentScreen} />
-      <HomeStack.Screen
-        name="AddDocumentScreen"
-        component={AddDocumentScreen}
-      />
-    </HomeStack.Navigator>
+          <HomeStack.Screen name="CarScreen" component={MyCarScreen} />
+          <HomeStack.Screen
+            name="PeriodicServiceScreen"
+            component={PeriodicServiceScreen}
+          />
+          <HomeStack.Screen
+            name="PeriodicServiceDetails"
+            component={PeriodicServiceDetails}
+          />
+          <HomeStack.Screen name="AddressScreen" component={AddressScreen} />
+          <HomeStack.Screen name="CartScreenInside" component={CartScreen} />
+          <HomeStack.Screen name="CheckoutScreen" component={CheckoutScreen} />
+          <HomeStack.Screen name="OrderScreen" component={OrderScreen} />
+          <HomeStack.Screen
+            name="OrderSummaryScreen"
+            component={OrderSummary}
+          />
+          <HomeStack.Screen name="MapScreen" component={MapScreen} />
+          <HomeStack.Screen name="DocumentScreen" component={DocumentScreen} />
+          <HomeStack.Screen
+            name="AddDocumentScreen"
+            component={AddDocumentScreen}
+          />
+        </HomeStack.Navigator>
+      </EmissionDocumentContextProvider>
+    </InsuranceDocumentContextProvider>
   );
 };

@@ -20,7 +20,11 @@ export const AddDocumentScreen = ({ navigation, route }) => {
         toLeft={true}
         navigation={navigation}
       />
-      {!!insurance ? <AddInsuranceDocument /> : <AddEmissionDocument />}
+      {!!insurance ? (
+        <AddInsuranceDocument navigation={navigation} />
+      ) : (
+        <AddEmissionDocument navigation={navigation} />
+      )}
     </SafeArea>
   );
 };

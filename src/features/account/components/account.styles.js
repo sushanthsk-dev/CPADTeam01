@@ -30,6 +30,11 @@ export const AccountCover = styled.View`
   background-color: rgba(255, 255, 255, 0.7);
 `;
 
+export const RegisterAccountContainer = styled.View`
+  width: 100%;
+  padding: ${(props) => props.theme.space[3]};
+  margin-top: ${(props) => props.theme.space[2]};
+`;
 export const AccountContainer = styled.View`
   padding: ${(props) => props.theme.space[3]};
   margin-top: ${(props) => props.theme.space[2]};

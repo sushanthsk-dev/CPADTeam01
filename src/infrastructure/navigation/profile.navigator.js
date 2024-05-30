@@ -6,7 +6,7 @@ import {
 import { ProfileScreen } from "../../features/profile/screens/profile.screens";
 import { MyProfileScreen } from "../../features/profile/screens/my-profile.screens";
 import { MyOrderScreen } from "../../features/profile/screens/my-order.screen";
-import { OrderSummary } from "../../features/profile/screens/order-summary";
+import { OrderSummary } from "../../features/profile/screens/order-summary.screen";
 import { MyCarScreen } from "../../features/profile/screens/my-car.screen";
 import { AddressScreen } from "../../features/cart/screens/address.screen";
 

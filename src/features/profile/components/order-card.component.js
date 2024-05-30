@@ -17,15 +17,17 @@ const OrderCardContainer = styled.View`
   border-radius: 5px;
 `;
 export const OrderCard = ({ orderDetails }) => {
+  const createdDate = new Date(orderDetails.createdAt);
   return (
     <OrderCardContainer>
       <Section>
         <Text variant="title">{orderDetails.servicePlan}</Text>
         <Text variant="caption">{`ID : ${orderDetails.orderId}`}</Text>
       </Section>
-      <Spacer position="left" size="medium">
+      <Section>
         <Text variant="light_text">{orderDetails.orderStatus}</Text>
-      </Spacer>
+        <Text variant="caption">{`Ordered on ${createdDate.toDateString()}`}</Text>
+      </Section>
     </OrderCardContainer>
   );
 };

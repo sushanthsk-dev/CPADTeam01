@@ -126,7 +126,11 @@ export const OrderSummary = ({ navigation, route }) => {
               <Spacer position="bottom" size="medium" />
               <AddressCard
                 edit={false}
-                address={{ ...order.user.address, phoneno: order.user.phoneno }}
+                address={{
+                  ...order.user.address,
+                  phoneno: order.user.phoneno,
+                  name: order.user.name,
+                }}
               />
             </Spacer>
             <ServiceStatusContainer>

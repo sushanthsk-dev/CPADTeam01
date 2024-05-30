@@ -24,45 +24,67 @@ const Body = styled.View`
   justify-content: space-between;
   padding: ${(props) => props.theme.space[3]} ${(props) => props.theme.space[1]};
 `;
+const setDateFormat = (date) => {
+  const currentDate = new Date(date);
+  const month =
+    currentDate.getMonth() < 9
+      ? `0${currentDate.getMonth() + 1}`
+      : currentDate.getMonth() + 1;
 
-export const InsuranceDocumentCard = ({ navigation }) => {
+  return `${month}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+};
+
+const differenceBetweenDates = (date) => {
+  const currentDate = new Date();
+  const exDate = new Date(date);
+  const difference = exDate.getTime() - currentDate.getTime();
+
+  return Math.ceil(difference / (1000 * 60 * 60 * 24));
+};
+export const InsuranceDocumentCard = ({ navigation, insuranceDocument }) => {
   return (
     <DocumentCardContainer>
       <Card>
         <Title>
-          <Text>Oriental Insurance</Text>
+          <Text>{insuranceDocument.insuranceCompanyName}</Text>
           <EvilIcons
             name="pencil"
             size={28}
             color="green"
-            onPress={() => navigation.navigate("AddDocumentScreen")}
+            onPress={() =>
+              navigation.navigate("AddDocumentScreen", { insurance: true })
+            }
           />
         </Title>
         <Spacer size="large">
           <Text variant="light_text">Policy No</Text>
-          <Text variant="subHead">4222203/31/2021/3873</Text>
+          <Text variant="subHead">{insuranceDocument.policyNo}</Text>
         </Spacer>
         <Body>
           <View>
             <Text variant="light_text">Insured's Name</Text>
-            <Text variant="subHead">Virat Kohli</Text>
+            <Text variant="subHead">{insuranceDocument.insuredName}</Text>
           </View>
           <Spacer position="right" size="larger">
             <Text variant="light_text">Expiry date</Text>
-            <Text variant="subHead">12/10/2021</Text>
+            <Text variant="subHead">
+              {setDateFormat(insuranceDocument.expiryDate)}
+            </Text>
           </Spacer>
         </Body>
       </Card>
       <Spacer position="left" size="medium">
         <Text variant="error">
-          Your insurance document will expire in 296days
+          {`Your insurance document will expire in ${differenceBetweenDates(
+            insuranceDocument.expiryDate
+          )}days`}
         </Text>
       </Spacer>
     </DocumentCardContainer>
   );
 };
 
-export const EmissionDocumentCard = ({ navigation }) => {
+export const EmissionDocumentCard = ({ navigation, emissionDocument }) => {
   return (
     <DocumentCardContainer>
       <Card>
@@ -72,27 +94,33 @@ export const EmissionDocumentCard = ({ navigation }) => {
             name="pencil"
             size={28}
             color="green"
-            onPress={() => navigation.navigate("AddDocumentScreen")}
+            onPress={() =>
+              navigation.navigate("AddDocumentScreen", { insurance: false })
+            }
           />
         </Title>
         <Spacer size="large">
           <Text variant="light_text">Pucc No</Text>
-          <Text variant="subHead">P1486KA102587</Text>
+          <Text variant="subHead">{emissionDocument.puucNo}</Text>
         </Spacer>
         <Body>
           <View>
             <Text variant="light_text">Customer's Name</Text>
-            <Text variant="subHead">Virat Kohli</Text>
+            <Text variant="subHead">{emissionDocument.customerName}</Text>
           </View>
           <Spacer position="right" size="larger">
             <Text variant="light_text">Expiry date</Text>
-            <Text variant="subHead">25/02/2021</Text>
+            <Text variant="subHead">
+              {setDateFormat(emissionDocument.expiryDate)}
+            </Text>
           </Spacer>
         </Body>
       </Card>
       <Spacer position="left" size="medium">
         <Text variant="error">
-          Your emission document will expire in 296days
+          {`Your emission document will expire in ${differenceBetweenDates(
+            emissionDocument.expiryDate
+          )}days`}
         </Text>
       </Spacer>
     </DocumentCardContainer>

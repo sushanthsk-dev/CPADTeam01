@@ -9,6 +9,8 @@ import {
   EmissionDocumentCard,
   InsuranceDocumentCard,
 } from "../components/document-card.component";
+import { InsuranceDocumentContext } from "../../../services/documents/insurance-document.context";
+import { EmissionDocumentContext } from "../../../services/documents/emission-document.context";
 const DocumentContainer = styled.View`
   margin-top: 70px;
 `;
@@ -42,7 +44,11 @@ const AddDocumentCard = ({ title, imageUrl }) => (
   </Card>
 );
 export const DocumentScreen = ({ navigation }) => {
-  const document = false;
+  const { insuranceDocument = null } = React.useContext(
+    InsuranceDocumentContext
+  );
+  const { emissionDocument = null } = React.useContext(EmissionDocumentContext);
+
   return (
     <SafeArea>
       <Header
@@ -52,34 +58,39 @@ export const DocumentScreen = ({ navigation }) => {
       />
 
       <DocumentContainer>
-        {!document ? (
-          <>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("AddDocumentScreen", { insurance: true })
-              }
-            >
-              <AddDocumentCard
-                title="Add Insurance Document Details"
-                imageUrl={require("../../../../assets/insuranceIcon.png")}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("AddDocumentScreen", { insurance: false })
-              }
-            >
-              <AddDocumentCard
-                title="Add Emission Document Details"
-                imageUrl={require("../../../../assets/emissionIcon.jpg")}
-              />
-            </TouchableOpacity>
-          </>
+        {!insuranceDocument ? (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("AddDocumentScreen", { insurance: true })
+            }
+          >
+            <AddDocumentCard
+              title="Add Insurance Document Details"
+              imageUrl={require("../../../../assets/insuranceIcon.png")}
+            />
+          </TouchableOpacity>
         ) : (
-          <>
-            <InsuranceDocumentCard navigation={navigation} />
-            <EmissionDocumentCard navigation={navigation} />
-          </>
+          <InsuranceDocumentCard
+            navigation={navigation}
+            insuranceDocument={insuranceDocument}
+          />
+        )}
+        {!emissionDocument ? (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("AddDocumentScreen", { insurance: false })
+            }
+          >
+            <AddDocumentCard
+              title="Add Emission Document Details"
+              imageUrl={require("../../../../assets/emissionIcon.jpg")}
+            />
+          </TouchableOpacity>
+        ) : (
+          <EmissionDocumentCard
+            navigation={navigation}
+            emissionDocument={emissionDocument}
+          />
         )}
       </DocumentContainer>
     </SafeArea>

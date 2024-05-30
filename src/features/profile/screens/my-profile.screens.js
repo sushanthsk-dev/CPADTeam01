@@ -33,7 +33,12 @@ export const MyProfileScreen = ({ navigation }) => {
     defaultValues: {
       name: user !== null ? user.name : "",
       email: user !== null ? user.email : "",
-      phoneno: user.phoneno !== null ? user.phoneno.toString() : "",
+      phoneno:
+        user.phoneno !== null
+          ? user.phoneno
+            ? user.phoneno.toString()
+            : ""
+          : "",
     },
   });
   const onSubmit = async (data) => {

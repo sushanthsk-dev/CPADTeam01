@@ -7,7 +7,7 @@ import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 
-const ForgotPasswordContainer = styled.View`
+export const ForgotPasswordContainer = styled.View`
   width: 100%;
   flex-direction: row;
   justify-content: flex-end;

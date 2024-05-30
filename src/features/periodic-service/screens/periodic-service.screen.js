@@ -20,15 +20,15 @@ const ServiceImageContainer = styled.View`
   width: 100%;
   background-color: grey;
   height: 180px;
-  margin-bottom: ${(props) => props.theme.space[1]};
+  margin-bottom: ${(props) => props.theme.space[3]};
 `;
 const CoverImage = styled.Image`
   width: 100%;
-  height: 180px;
+  height: 200px;
 `;
 const ScrollViewContainer = styled(ScrollView)`
   background-color: #fff;
-  margin-top: 70px;
+  margin-top: 56px;
 `;
 export const PeriodicServiceScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(true);
