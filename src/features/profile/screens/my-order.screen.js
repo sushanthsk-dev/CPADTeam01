@@ -11,7 +11,6 @@ import { Text } from "../../../components/typography/text.component";
 import { LoadingDiv } from "../../../components/loading/loading.component";
 
 const OrderContainer = styled(ScrollView)`
-  margin-top: 60px;
   padding-top: 10px;
   margin-bottom: ${(props) => props.theme.space[2]};
 `;

@@ -44,6 +44,7 @@ export const AgentHomeNavigator = () => {
             name="Home"
             component={AgentNavigator}
             options={({ route }) => ({
+              headerShown: false,
               tabBarVisible: ((routes) => {
                 const routeName = getFocusedRouteNameFromRoute(routes) ?? "";
                 console.log(routeName);
@@ -54,7 +55,7 @@ export const AgentHomeNavigator = () => {
               })(route),
             })}
           />
-          <Tab.Screen name="Profile" component={AgentProfileScreen} />
+          <Tab.Screen name="Profile" options={{headerShown: false}} component={AgentProfileScreen} />
         </Tab.Navigator>
       </AddressContextProvider>
     </ProfileContextProvider>

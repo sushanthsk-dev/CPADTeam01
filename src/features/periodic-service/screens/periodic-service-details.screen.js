@@ -27,7 +27,7 @@ const PeriodicServiceDetailsContainer = styled.View`
 const ImageCarousel = styled.View`
   width: 100%;
   height: 200px;
-  margin-top: 50px;
+  // margin-top: 50px;
   background-color: grey;
 `;
 

@@ -13,7 +13,7 @@ import { OrderScreen } from "../../features/cart/screens/order.screen";
 import { DocumentScreen } from "../../features/insurance-and-emission/screens/documents.screens";
 import { DocumentNavigator } from "./document.navigator";
 import { AddDocumentScreen } from "../../features/insurance-and-emission/screens/add-document.screen";
-import { MapScreen } from "../../features/map/screens/map.screen";
+import  MapScreen  from "../../features/map/screens/map.screen";
 import { MechanicScreen } from "../../features/mechanic/screens/mechanic.screen";
 import { MyCarScreen } from "../../features/profile/screens/my-car.screen";
 import { OrderSummary } from "../../features/profile/screens/order-summary.screen";

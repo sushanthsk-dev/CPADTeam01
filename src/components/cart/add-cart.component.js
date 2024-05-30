@@ -10,6 +10,7 @@ const AddButton = styled(TouchableOpacity)`
   position: absolute;
   top: 90px;
   right: 0;
+  z-index: 999;
 `;
 
 const CartText = styled(Text)`
@@ -38,8 +39,9 @@ export const AddCart = ({ servicePlan, textComponent = false }) => {
 
   return (
     <PrimaryButton
-      onPress={() =>
+      onPress={() => {
         !isAdded ? addCart(servicePlan) : removeCart(servicePlan)
+      }
       }
     >
       <CartText variant="subTitle">

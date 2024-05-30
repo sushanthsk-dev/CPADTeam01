@@ -172,6 +172,7 @@ export const AgentOrderListScreen = ({ navigation, name }) => {
           <Tab.Screen
             name="OngoingOrders"
             options={({ route }) => ({
+              headerShown: false,
               tabBarLabel: "Ongoing Orders",
             })}
             component={onGoingOrders}
@@ -179,6 +180,7 @@ export const AgentOrderListScreen = ({ navigation, name }) => {
           <Tab.Screen
             name="CompletedOrders"
             options={({ route }) => ({
+              headerShown: false,
               tabBarLabel: "Completed Orders",
             })}
             component={completedOrders}

@@ -26,6 +26,12 @@ const TAB_ICON = {
 const screenOptions = ({ route }) => {
   const icon = TAB_ICON[route.name];
   return {
+    activeTintColor: "#6200EE",
+    inactiveTintColor: "#262626",
+    showLabel: false,
+    tabBarLabelStyle: {
+      display: "none"
+    },
     tabBarIcon: ({ size, color }) => {
       return <MaterialCommunityIcons name={icon} color={color} size={size} />;
     },
@@ -58,17 +64,14 @@ export const AppNavigator = () => {
               <DateContextProvider>
                 <TimeContextProvider>
                   <Tab.Navigator
+                  labeled={false}
                     screenOptions={screenOptions}
-                    tabBarOptions={{
-                      activeTintColor: "#6200EE",
-                      inactiveTintColor: "#262626",
-                      showLabel: false,
-                    }}
                   >
                     <Tab.Screen
-                      name="Home"
+                      name="Home"          
                       component={HomeNavigator}
                       options={({ route }) => ({
+                        headerShown: false,
                         tabBarVisible: ((routes) => {
                           const routeName =
                             getFocusedRouteNameFromRoute(routes) ?? "";
@@ -83,6 +86,7 @@ export const AppNavigator = () => {
                     <Tab.Screen
                       name="Profile"
                       options={({ route }) => ({
+                        headerShown: false,
                         tabBarVisible: ((routes) => {
                           const routeName =
                             getFocusedRouteNameFromRoute(routes) ?? "";

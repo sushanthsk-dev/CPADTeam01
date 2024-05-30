@@ -7,7 +7,7 @@ import { Text } from "../typography/text.component";
 import { Spacer } from "../spacer/spacer.component";
 
 const HeaderContainer = styled.View`
-  position: absolute;
+  position: relative;
   width: 100%;
   z-index: 1111;
   height: 56px;

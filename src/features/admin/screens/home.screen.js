@@ -36,7 +36,7 @@ export const AdminScreen = ({ navigation }) => {
         >
           <FeatureCard
             title="Manage Agent"
-            imgSrc="https://carzoo-bucket.s3.ap-south-1.amazonaws.com/car-agent.png"
+            imgSrc="https://carzoo21.s3.amazonaws.com/car-agent.png"
           />
         </TouchableOpacity>
 
@@ -47,7 +47,7 @@ export const AdminScreen = ({ navigation }) => {
         >
           <FeatureCard
             title="Manage Mechanic"
-            imgSrc="https://carzoo-bucket.s3.ap-south-1.amazonaws.com/car-mechanic.png"
+            imgSrc="https://carzoo21.s3.amazonaws.com/car-mechanic.png"
           />
         </TouchableOpacity>
 
@@ -56,7 +56,7 @@ export const AdminScreen = ({ navigation }) => {
         >
           <FeatureCard
             title="Manage Service Orders"
-            imgSrc="https://carzoo-bucket.s3.ap-south-1.amazonaws.com/manage-car-periodic-service.png"
+            imgSrc="https://carzoo21.s3.amazonaws.com/manage-car-periodic-service.png"
           />
         </TouchableOpacity>
       </View>

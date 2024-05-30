@@ -136,6 +136,7 @@ export const ManageProfile = ({ navigation, role }) => {
           <Tab.Screen
             name="Active"
             options={({ route }) => ({
+              headerShown: false,
               tabBarLabel: `Active ${role}`,
             })}
             component={ActiveUser}

@@ -31,7 +31,7 @@ const CoverImage = styled.Image`
 `;
 const ScrollViewContainer = styled(ScrollView)`
   background-color: #fff;
-  margin-top: 56px;
+  // margin-top: 56px;
 `;
 export const PeriodicServiceScreen = ({ navigation }) => {
   const { periodicServicePlans, isLoading, retrievePeriodicService } =

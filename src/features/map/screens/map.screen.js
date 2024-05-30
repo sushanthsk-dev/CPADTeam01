@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import MapView from "react-native-maps";
+import MapView, { Circle, Marker } from "react-native-maps";
 import { FontAwesome } from "@expo/vector-icons";
 import { Button as CallButton, Colors } from "react-native-paper";
 import { AppState, AppStateStatus } from "react-native";
@@ -176,7 +176,11 @@ const MechanicMap = ({ navigation }) => {
     AppState.addEventListener("change", handleAppStateChange);
 
     // unsubscribe
-    return () => AppState.removeEventListener("change", handleAppStateChange);
+    return () => {
+      if(typeof AppState.removeEventListener === "function") {
+        return AppState.removeEventListener("change", handleAppStateChange);
+      }
+    }
   }, []);
   useEffect(() => {
     setLagDelta(KM === 1000 ? 0.033 : KM === 5000 ? 0.107 : 0.198);
@@ -223,15 +227,15 @@ const MechanicMap = ({ navigation }) => {
           >
             {currentLocation && (
               <>
-                <MapView.Marker
+                <Marker
                   coordinate={{
                     latitude: currentLocation.latitude,
                     longitude: currentLocation.longitude,
                   }}
                 >
                   <FontAwesome name="circle" size={24} color={Colors.blue500} />
-                </MapView.Marker>
-                <MapView.Circle
+                </Marker>
+                <Circle
                   key={(longitude + latitude).toString()}
                   center={currentLocation}
                   radius={KM}
@@ -244,7 +248,7 @@ const MechanicMap = ({ navigation }) => {
             {!!mechanics &&
               mechanics.map((mechanic, i) => {
                 return (
-                  <MapView.Marker
+                  <Marker
                     key={`${mechanic.name}+${i}`}
                     title={mechanic.name}
                     coordinate={{
@@ -252,15 +256,15 @@ const MechanicMap = ({ navigation }) => {
                       longitude: mechanic.location.coordinates[0],
                     }}
                   >
-                    <MapView.Callout
+                    <Callout
                       onPress={() => {
                         setCurrentMechanic(mechanic);
                         setModalVisible(true);
                       }}
                     >
                       <MapCallout isMap={true} mechanic={mechanic} />
-                    </MapView.Callout>
-                  </MapView.Marker>
+                    </Callout>
+                  </Marker>
                 );
               })}
             {/* <Marker
@@ -320,7 +324,7 @@ const MechanicMap = ({ navigation }) => {
   );
 };
 
-export const MapScreen = ({ navigation }) => {
+export default function MapScreen ({ navigation }) {
   // const { location } = useContext(LocationContext);
 
   const location = true;

@@ -204,9 +204,10 @@ export const OrderListScreen = ({ navigation, name }) => {
       <Header toLeft={true} navigation={navigation} title="Manage Orders" />
       <OrderContainer>
         <Tab.Navigator>
-          <Tab.Screen
+          <Tab.Screen     
             name="OngoingOrders"
             options={({ route }) => ({
+              headerShown: false,
               tabBarLabel: "Ongoing Orders",
             })}
             component={onGoingOrders}
@@ -214,6 +215,7 @@ export const OrderListScreen = ({ navigation, name }) => {
           <Tab.Screen
             name="CompletedOrders"
             options={({ route }) => ({
+              headerShown: false,
               tabBarLabel: "Completed Orders",
             })}
             component={completedOrders}

@@ -41,6 +41,7 @@ export const MechanicHomeNavigator = () => {
             name="Home"
             component={MechanicNavigator}
             options={({ route }) => ({
+              headerShown: false,
               tabBarVisible: ((routes) => {
                 const routeName = getFocusedRouteNameFromRoute(routes) ?? "";
                 console.log(routeName);

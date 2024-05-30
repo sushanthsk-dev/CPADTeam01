@@ -42,19 +42,19 @@ export const HomeScreen = ({ navigation }) => {
         >
           <FeatureCard
             title="Periodic Service"
-            imgSrc="https://carzoo-bucket.s3.ap-south-1.amazonaws.com/car-periodic-service.png"
+            imgSrc="https://carzoo21.s3.amazonaws.com/periodic-service.png"
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("MapScreen")}>
           <FeatureCard
             title="Mechanic Nearby"
-            imgSrc="https://carzoo-bucket.s3.ap-south-1.amazonaws.com/nearby-mechanic.png"
+            imgSrc="https://carzoo21.s3.amazonaws.com/nearby-mechanic.png"
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("DocumentScreen")}>
           <FeatureCard
             title="Insurance & Emission Test Document"
-            imgSrc="https://carzoo-bucket.s3.ap-south-1.amazonaws.com/document.png"
+            imgSrc="https://carzoo21.s3.amazonaws.com/document.png"
           />
         </TouchableOpacity>
       </View>

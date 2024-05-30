@@ -2,16 +2,19 @@ import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components/native";
 import { Button, ActivityIndicator, Colors } from "react-native-paper";
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { useForm } from "react-hook-form";
 import { IPADDRESS } from "../../../utils/env";
 import { Header } from "../../../components/header/header.component";
 import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
-import { Dropdown } from "react-native-material-dropdown-v2";
+// import { Dropdown } from "react-native-material-dropdown-v2";
+import {Picker} from '@react-native-picker/picker';
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { InputController } from "../../../components/form-control/input-control.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 import { toastMessage } from "../../../components/toast-message/toast.component";
+
 const CarContainer = styled.View`
   height: 100%;
   align-items: center;
@@ -25,9 +28,9 @@ const AddressButton = styled(Button)`
   width: 340px;
 `;
 
-const DropdownMenu = styled(Dropdown)`
-  width: 340px;
-`;
+// const DropdownMenu = styled(Dropdown)`
+//   width: 340px;
+// `;
 
 const data = [
   {
@@ -103,6 +106,9 @@ export const MyCarScreen = ({ navigation, route }) => {
   const [fuelType, setfuelType] = useState(
     myCar ? (myCar.fuelType ? myCar.fuelType : null) : null
   );
+  const [fuelTypeIndex, setfuelTypeIndex] = useState(
+    myCar ? (myCar.fuelType === "Diesel" ? 0 : 1) : 0
+  );
 
   const {
     register,
@@ -130,7 +136,7 @@ export const MyCarScreen = ({ navigation, route }) => {
   console.log(errors);
   const onSubmit = async (carData) => {
     carData.carModel = carModel;
-    carData.fuelType = fuelType;
+    carData.fuelType = fuelTypeIndex;
     setErrorCarModel(false);
     setErrorFuelType(false);
     if (carModel === null) {
@@ -144,6 +150,7 @@ export const MyCarScreen = ({ navigation, route }) => {
     }
     try {
       setIsLoading(true);
+      console.log("carr data", carData);
       const res = await axios({
         method: "PATCH",
         headers: { Authorization: `Bearer ${headerToken}` },
@@ -161,6 +168,7 @@ export const MyCarScreen = ({ navigation, route }) => {
       console.log(res.data.status);
     } catch (e) {
       setIsLoading(false);
+      console.log(e);
       setError(e.response.data.message);
     }
   };
@@ -171,26 +179,40 @@ export const MyCarScreen = ({ navigation, route }) => {
       <Header title="My Car" toLeft={true} navigation={navigation} />
       <CarContainer>
         <InputeContainer>
-          <Spacer size="medium" position="bottom">
-            <DropdownMenu
+          <Spacer size="medium">
+            {/* <DropdownMenu
               label="Select car Model"
               data={data}
               value={carModel}
               onChangeText={(value) => setCarModel(value)}
-            />
+            /> */}
+            <Text variant="label">Select car model</Text>
+            <Picker selectedValue={carModel} onValueChange={(carModelValue, _carModelIndex) => {
+              setCarModel(carModelValue);
+            }}>
+            {data.map((car => <Picker.Item key={car.imgUrl} value={car.value} label={car.value} />))}
+            </Picker >
             {errorCarModel === true && (
               <Spacer position="left" size="large">
                 <Text variant="error">Please select car model</Text>
               </Spacer>
             )}
           </Spacer>
-          <Spacer size="large">
-            <DropdownMenu
+          <Spacer size="small">
+            {/* <DropdownMenu
               label="Fuel type"
               data={rawData}
               value={fuelType}
               onChangeText={(value) => setfuelType(value)}
-            />
+            /> */}
+             <Text variant="label" >Fuel Type</Text>
+             <SegmentedControl
+                values={['Diesel', 'Petrol']}
+                selectedIndex={fuelTypeIndex}
+                onValueChange={(value) => {
+                  setfuelTypeIndex(value);
+                }}
+              />
             {errorFuelType === true && (
               <Spacer position="left" size="large">
                 <Text variant="error">Please select fuel type</Text>

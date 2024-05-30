@@ -59,6 +59,7 @@ export const AdminHomeNavigator = () => {
                 name="Home"
                 component={AdminNavigator}
                 options={({ route }) => ({
+                  headerShown: false,
                   tabBarVisible: ((routes) => {
                     const routeName =
                       getFocusedRouteNameFromRoute(routes) ?? "";
@@ -70,7 +71,7 @@ export const AdminHomeNavigator = () => {
                   })(route),
                 })}
               />
-              <Tab.Screen name="Profile" component={AdminProfileScreen} />
+              <Tab.Screen name="Profile" options={{headerShown: false}} component={AdminProfileScreen} />
             </Tab.Navigator>
           </BookingOrderContextProvider>
         </AgentMechanicContextProvider>

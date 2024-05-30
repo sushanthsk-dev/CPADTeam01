@@ -9,7 +9,7 @@ export const PrimaryButton = styled(TouchableOpacity)`
   background-color:${(props) => props.theme.colors.brand.primary}
   top:20px;
   padding: ${(props) => props.theme.space[2]};
-  z-index: 888;
+  z-index: 777;
   border-radius:5px;
 `;
 

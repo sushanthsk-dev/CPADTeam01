@@ -6,7 +6,7 @@ import { Text } from "../typography/text.component";
 
 const CartFloatContainer = styled.View`
   position: absolute;
-  height: 44px;
+  height: 48px;
   bottom: 10px;
   width: 96%;
   margin: ${(props) => props.theme.space[2]};
