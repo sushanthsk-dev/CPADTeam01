@@ -3,7 +3,7 @@
 BITS ID     | Name
 ----------  | -----
 2021hs70010 | Anjali Mishra
-2021hs70017 | Preeti B Baddi
+2021hs70017 | Preeti M Baddi
 2021hs70006 | Shruti Dhanuka
 2021hs70024 | Sushanth 
 
