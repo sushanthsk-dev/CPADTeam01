@@ -10,26 +10,28 @@ BITS ID     | Name
 # Carzoo Mobile App 📱
 ![logo](https://github.com/SWENGG4Y2023/CPADTeam01/assets/73495117/f0f7cfc7-6c9c-4c9b-9a43-1a2b4ad05ae1)
 
-
+![GitHub stars](https://img.shields.io/github/stars/SWENGG4Y2023/CPADTeam01)  ![GitHub forks](https://img.shields.io/github/forks/SWENGG4Y2023/CPADTeam01)  ![GitHub pull requests](https://img.shields.io/github/issues-pr/SWENGG4Y2023/CPADTeam01) ![GitHub contributors](https://img.shields.io/github/contributors/SWENGG4Y2023/CPADTeam01)
 ## Overview
-
-Carzoo is a comprehensive mobile application designed to simplify car maintenance and management for vehicle owners. With a focus on ease of use and efficiency, CarZoo offers a suite of features that help users stay on top of their car's periodic services, find nearby mechanics, and maintain essential documents related to insurance and emission compliance.
+The Carzoo app is designed to streamline car service management, providing functionalities for car owners, service center managers, mechanics, and service agents. The app supports periodic car servicing, locating nearby mechanics for breakdown services, and managing important car-related documents.
 
 ## Features
+1. **Car Periodic Service**
+   - Car owners can choose service plans (Standard, Comprehensive, Basic) and schedule service appointments.
+   - Service orders are managed by service center managers and assigned to service agents for execution.
+   
+2. **Nearby Mechanics**
+   - Displays mechanics near the car owner's current location for breakdown services.
+   - Mechanics can update their location through their profiles.
+   
+3. **Document Management**
+   - Manages documents related to insurance and emissions.
+   - Sends email alerts before document expiry.
 
-### Periodic Service Reminders
-- **Automated Alerts**: Receive timely notifications for upcoming service dates to ensure your vehicle remains in top condition.
-- **Service History Tracking**: Keep a detailed log of all past services, repairs, and maintenance activities.
-
-### Nearby Mechanics
-- **Find Mechanics**: Locate trusted and verified mechanics in your vicinity with just a few taps.
-- **Reviews and Ratings**: Access user reviews and ratings to choose the best service provider for your needs.
-- **Booking Appointments**: Schedule service appointments directly through the app, saving time and hassle.
-
-### Document Management
-- **Insurance Documents**: Store your car insurance documents.
-- **Emission Certificates**: Keep track of your vehicle's emission compliance certificates and receive reminders for renewals.
-- **Easy Access**: Access all your important documents anytime, anywhere from within the app.
+## User Roles
+- **Car Owner**: Books services, finds nearby mechanics, manages documents.
+- **Service Center Manager**: Manages service orders, assigns service agents.
+- **Mechanic**: Updates location, receives and responds to service requests.
+- **Service Agent**: Handles assigned orders, updates service status.
 
 ## License
 
