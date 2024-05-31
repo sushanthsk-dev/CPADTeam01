@@ -29,7 +29,7 @@ export const CompactMechanicInfo = ({ mechanic, isMap }) => {
     <Item>
       <Image
         source={{
-          uri: `https://carzoo-bucket.s3.ap-south-1.amazonaws.com/users/${photo}`,
+          uri: `https://carzoo21.s3.amazonaws.com/default.jpg`,
         }}
       />
       <Text center variant="caption" numberOfLines={3}>
