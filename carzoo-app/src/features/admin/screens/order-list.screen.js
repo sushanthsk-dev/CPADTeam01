@@ -15,7 +15,6 @@ import { NoOrderContainer } from "../../../components/no-order/no-order.componen
 const Tab = createMaterialTopTabNavigator();
 
 const OrderContainer = styled.View`
-  margin-top: 55px;
   flex: 1;
 `;
 
@@ -108,7 +107,7 @@ export const OrderListScreen = ({ navigation, name }) => {
   useEffect(() => {
     getBookingOrders();
   }, []);
-  const onGoingOrders = () => {
+  const OnGoingOrders = () => {
     return !isLoading ? (
       <>
         <CardContainer>
@@ -167,7 +166,7 @@ export const OrderListScreen = ({ navigation, name }) => {
       <LoadingDiv />
     );
   };
-  const completedOrders = () => {
+  const CompletedOrders = () => {
     return !isLoading ? (
       orderList.length > 0 ? (
         <CardContainer>
@@ -205,12 +204,12 @@ export const OrderListScreen = ({ navigation, name }) => {
       <OrderContainer>
         <Tab.Navigator>
           <Tab.Screen     
-            name="OngoingOrders"
+            name="OnGoingOrders"
             options={({ route }) => ({
               headerShown: false,
               tabBarLabel: "Ongoing Orders",
             })}
-            component={onGoingOrders}
+            component={OnGoingOrders}
           />
           <Tab.Screen
             name="CompletedOrders"
@@ -218,7 +217,7 @@ export const OrderListScreen = ({ navigation, name }) => {
               headerShown: false,
               tabBarLabel: "Completed Orders",
             })}
-            component={completedOrders}
+            component={CompletedOrders}
           />
         </Tab.Navigator>
       </OrderContainer>

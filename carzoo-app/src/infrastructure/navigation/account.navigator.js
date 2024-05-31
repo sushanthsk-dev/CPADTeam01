@@ -12,7 +12,7 @@ const Stack = createStackNavigator();
 
 export const AccountNavigator = () => {
   return (
-    <Stack.Navigator headerMode="none">
+    <Stack.Navigator screenOptions={{headerMode: false}}>
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen
         name="ChangePasswordScreen"

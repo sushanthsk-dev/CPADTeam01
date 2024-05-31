@@ -52,6 +52,29 @@ export const AgentMechanicContextProvider = ({ children }) => {
       setIsLoading(false);
     }
   };
+  const updateAgentMechanic = async (id, data, role) => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const res = await axios({
+        method: "PATCH",
+        url: `${IPADDRESS}/api/v1/admin/${id}`,
+        headers: { Authorization: `Bearer ${headerToken}` },
+        data: data,
+      });
+      if (res.data.status === "success") {
+        await getAgentMechanic(role);
+        setIsLoading(false);
+        return "success";
+      }
+      setIsLoading(false);
+      // setAgentMechanic(res.data.data.doc);
+    } catch (e) {
+      console.log("E", e.response.data);
+      setError(e.response.data.message);
+      setIsLoading(false);
+    }
+  };
 
   const deactivateAgentMechanic = async (userId, role) => {
     setError(null);
@@ -153,6 +176,7 @@ export const AgentMechanicContextProvider = ({ children }) => {
         deactivateAgentMechanic,
         activateAgentMechanic,
         addMechanicLocation,
+        updateAgentMechanic,
         isLoading,
         error,
         setError,

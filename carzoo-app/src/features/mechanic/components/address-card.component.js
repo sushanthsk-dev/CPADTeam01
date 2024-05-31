@@ -25,8 +25,8 @@ const Phoneno = styled.View`
 
 export const AddressCard = ({ navigation, address = {}, edit = true }) => {
   address.address = "Hello WOrld";
-  address.city = "moodbidri";
-  address.pincode = "574227";
+  address.city = "Whitefield";
+  address.pincode = "560067";
   address.state = "Karnataka";
   address.phoneno = "9876543210";
   return (

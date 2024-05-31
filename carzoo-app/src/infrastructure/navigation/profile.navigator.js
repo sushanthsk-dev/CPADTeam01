@@ -15,8 +15,7 @@ const ProfileStack = createStackNavigator();
 export const ProfileNavigator = () => {
   return (
     <ProfileStack.Navigator
-      headerMode="none"
-      screenOptions={{ ...TransitionPresets.SlideFromRightIOS }}
+      screenOptions={{headerMode: false, ...TransitionPresets.SlideFromRightIOS }}
     >
       <ProfileStack.Screen name="ProfileScreen" component={ProfileScreen} />
       <ProfileStack.Screen name="MyProfileScreen" component={MyProfileScreen} />

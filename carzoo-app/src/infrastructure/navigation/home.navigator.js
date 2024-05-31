@@ -26,8 +26,7 @@ export const HomeNavigator = () => {
     <InsuranceDocumentContextProvider>
       <EmissionDocumentContextProvider>
         <HomeStack.Navigator
-          headerMode="none"
-          screenOptions={{ ...TransitionPresets.ScaleFromCenterAndroid }}
+          screenOptions={{headerMode: false, ...TransitionPresets.ScaleFromCenterAndroid }}
         >
           <HomeStack.Screen
             name="HomeScreen"

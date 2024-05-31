@@ -18,8 +18,7 @@ const ViewScreen = () => (
 export const CartScreen = () => {
   return (
     <CartStack.Navigator
-      headerMode="none"
-      screenOptions={{ ...TransitionPresets.ModalSlideFromBottomIOS }}
+      screenOptions={{headerMode: false, ...TransitionPresets.ModalSlideFromBottomIOS }}
     >
       <CartScreen.Screen name="CartScreen" component={ViewScreen} />
     </CartStack.Navigator>

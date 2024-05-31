@@ -10,8 +10,7 @@ const DocumentStack = createStackNavigator();
 export const DocumentNavigator = () => {
   return (
     <DocumentStack.Navigator
-      headerMode="none"
-      screenOptions={{ ...TransitionPresets.ModalSlideFromBottomIOS }}
+      screenOptions={{ ...TransitionPresets.ModalSlideFromBottomIOS, headerMode: false }}
     >
       <DocumentStack.Screen name="DocumentScreen" component={DocumentScreen} />
       <DocumentStack.Screen
