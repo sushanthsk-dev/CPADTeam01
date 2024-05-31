@@ -1,0 +1,11 @@
+extends baseEmail
+block content
+    p Hi #{firstName},
+    br
+    if resetCode.type== 'insurance'
+        p=`This is to alert you that your insurance policy no ${resetCode.policyNo} will expiry on ${resetCode.expiryDate}`
+    else   
+        p=`This is to alert you that your emission document no ${resetCode.policyNo} will expiry on ${resetCode.expiryDate}`
+    
+
+    
