@@ -16,7 +16,7 @@ import { NoOrderContainer } from "../../../components/no-order/no-order.componen
 const Tab = createMaterialTopTabNavigator();
 
 const Container = styled.View`
-  margin-top: 56px;
+  // margin-top: 56px;
   flex: 1;
 `;
 
@@ -51,6 +51,7 @@ export const ManageProfile = ({ navigation, role }) => {
     getAgentMechanic(role);
   }, []);
 
+  // eslint-disable-next-line react/no-unstable-nested-components
   const ActiveUser = () => {
     return isLoading === true ? (
       <LoadingDiv />
@@ -75,7 +76,7 @@ export const ManageProfile = ({ navigation, role }) => {
                 )
               );
             })}
-          <NoOrderContainer text={`No ${role}`} />
+          {/* <NoOrderContainer text={`No ${role}`} /> */}
         </CardContainer>
         <AddButton
           onPress={() => navigation.navigate("AddUserScreen", { role: role })}
@@ -107,7 +108,7 @@ export const ManageProfile = ({ navigation, role }) => {
               )
             );
           })}
-        <NoOrderContainer text={`No ${role}`} />
+        {/* <NoOrderContainer text={`No ${role}`} /> */}
       </CardContainer>
     );
   };

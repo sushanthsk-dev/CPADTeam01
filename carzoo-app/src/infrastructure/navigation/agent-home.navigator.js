@@ -14,8 +14,7 @@ export const AgentNavigator = () => {
   return (
     <BookingOrderContextProvider>
       <AgentStack.Navigator
-        headerMode="none"
-        screenOptions={{ ...TransitionPresets.ScaleFromCenterAndroid }}
+        screenOptions={{headerMode: false, ...TransitionPresets.ScaleFromCenterAndroid }}
       >
         <AgentStack.Screen
           name="OrderListScreen"

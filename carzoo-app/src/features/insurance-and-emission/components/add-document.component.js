@@ -130,7 +130,11 @@ export const AddInsuranceDocument = ({ navigation }) => {
       currentDate.getDate() <= 9
         ? `0${currentDate.getDate()}`
         : currentDate.getDate();
-    setExpiryDate(`${month}/${day}/${currentDate.getFullYear()}`);
+    if (day && month) {
+
+      setExpiryDate(`${month}/${day}/${currentDate.getFullYear()}`);
+    }
+    console.log("EXP", expiryDate);
   };
 
   const onChange = (event, selectedDate) => {
@@ -268,7 +272,7 @@ export const AddInsuranceDocument = ({ navigation }) => {
         {showDatePicker && (
           <DateTimePicker
             testID="dateTimePicker"
-            value={expiryDate ? new Date(expiryDate) : new Date()}
+            value={!expiryDate ? new Date() : new Date()}
             mode="date"
             minimumDate={minDate}
             is24Hour={true}
@@ -400,8 +404,6 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || expiryDate;
-    // setShowDatePicker(Platform.OS === "ios");
-
     setShowDatePicker(false);
     setDateFormat(currentDate);
   };
@@ -508,7 +510,7 @@ export const AddEmissionDocument = ({ emission = false, navigation }) => {
         {showDatePicker && (
           <DateTimePicker
             testID="dateTimePicker"
-            value={expiryDate ? new Date(expiryDate) : new Date()}
+            value={expiryDate !== null ? new Date() : new Date()}
             mode="date"
             minimumDate={minDate}
             is24Hour={true}

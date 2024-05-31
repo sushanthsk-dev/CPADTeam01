@@ -27,6 +27,9 @@ const TAB_ICON = {
 const screenOptions = ({ route }) => {
   const icon = TAB_ICON[route.name];
   return {
+    activeTintColor: "#6200EE",
+    inactiveTintColor: "#262626",
+    showLabel: false,
     tabBarIcon: ({ size, color }) => {
       return <MaterialCommunityIcons name={icon} color={color} size={size} />;
     },
@@ -41,20 +44,14 @@ const hideScreenArray = [
   "AgentListScreen",
 ];
 
+
 export const AdminHomeNavigator = () => {
   return (
     <ProfileContextProvider>
       <AddressContextProvider>
         <AgentMechanicContextProvider>
           <BookingOrderContextProvider>
-            <Tab.Navigator
-              screenOptions={screenOptions}
-              tabBarOptions={{
-                activeTintColor: "#6200EE",
-                inactiveTintColor: "#262626",
-                showLabel: false,
-              }}
-            >
+            <Tab.Navigator screenOptions={screenOptions}>
               <Tab.Screen
                 name="Home"
                 component={AdminNavigator}

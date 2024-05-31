@@ -54,7 +54,7 @@ const EmptyCartContainer = styled.View`
 `;
 
 export const CartScreen = ({ route, navigation }) => {
-  const [pincode, setPincode] = useState("574227");
+  const [pincode, setPincode] = useState("560067");
   const [disable, setDisable] = useState(true);
   const [successText, setSuccessText] = useState(null);
   const [pincodeError, setPincodeError] = useState(null);
@@ -73,7 +73,7 @@ export const CartScreen = ({ route, navigation }) => {
     if (!value) {
       return setPincodeError("Enter the correct pincode format");
     }
-    if (parseInt(pincode) !== 574227) {
+    if (parseInt(pincode) !== 560067) {
       setDisable(true);
       return setPincodeError(
         "Sorry the service is not available in the entered pincode"
@@ -145,7 +145,7 @@ export const CartScreen = ({ route, navigation }) => {
           <CheckoutButton
             disabled={disable}
             onPress={() => {
-              if (parseInt(pincode) === 574227) {
+              if (parseInt(pincode) === 560067) {
                 navigation.navigate("CheckoutScreen", {
                   servicePlan: servicePlan,
                 });

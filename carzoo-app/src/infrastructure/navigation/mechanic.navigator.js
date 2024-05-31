@@ -16,8 +16,7 @@ export const MechanicNavigator = () => {
   return (
     <AgentMechanicContextProvider>
       <MechanicStack.Navigator
-        headerMode="none"
-        screenOptions={{ ...TransitionPresets.ScaleFromCenterAndroid }}
+        screenOptions={{headerMode: false, ...TransitionPresets.ScaleFromCenterAndroid }}
       >
         {!user.location && (
           <MechanicStack.Screen

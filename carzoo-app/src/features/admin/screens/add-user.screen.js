@@ -34,7 +34,7 @@ const Button = styled(ReactButton)`
 `;
 
 export const AddUserScreen = ({ navigation, route }) => {
-  const { createAgentMechanic, isLoading, error, setError } =
+  const { createAgentMechanic, updateAgentMechanic, isLoading, error, setError } =
     useContext(AgentMechanicContext);
   const { role, user = null } = route.params;
 
@@ -50,15 +50,20 @@ export const AddUserScreen = ({ navigation, route }) => {
       name: user !== null ? user.name : "Anoop",
       email: user !== null ? user.email : "anoop14@gmail.com",
       workAssignedLocation:
-        user !== null ? user.workAssignedLocation : "moodbidri",
+        user !== null ? user.workAssignedLocation : "Whitefield",
       phoneno: user !== null ? user.phoneno.toString() : "9876543210",
-      pincode: user !== null ? user.pincode.toString() : "574227",
+      pincode: user !== null ? user.pincode.toString() : "560066",
       role: user !== null ? user.role : role === "agent" ? "agent" : "mechanic",
     },
   });
   const onSubmit = async (data) => {
     console.log(data);
-    const res = await createAgentMechanic(data, role);
+    let res = "";
+    if (!user || !user._id) {
+      res = await createAgentMechanic(data, role);
+    } else {
+      res = await updateAgentMechanic(user._id, data, role);
+    }
     if (res === "success") {
       toastMessage("Mechanic created successfully");
       navigation.goBack();

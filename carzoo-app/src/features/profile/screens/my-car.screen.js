@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components/native";
 import { Button, ActivityIndicator, Colors } from "react-native-paper";
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useForm } from "react-hook-form";
 import { IPADDRESS } from "../../../utils/env";
 import { Header } from "../../../components/header/header.component";
 import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 // import { Dropdown } from "react-native-material-dropdown-v2";
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from "@react-native-picker/picker";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { InputController } from "../../../components/form-control/input-control.component";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
@@ -187,11 +187,20 @@ export const MyCarScreen = ({ navigation, route }) => {
               onChangeText={(value) => setCarModel(value)}
             /> */}
             <Text variant="label">Select car model</Text>
-            <Picker selectedValue={carModel} onValueChange={(carModelValue, _carModelIndex) => {
-              setCarModel(carModelValue);
-            }}>
-            {data.map((car => <Picker.Item key={car.imgUrl} value={car.value} label={car.value} />))}
-            </Picker >
+            <Picker
+              selectedValue={carModel}
+              onValueChange={(carModelValue, _carModelIndex) => {
+                setCarModel(carModelValue);
+              }}
+            >
+              {data.map((car) => (
+                <Picker.Item
+                  key={car.imgUrl}
+                  value={car.value}
+                  label={car.value}
+                />
+              ))}
+            </Picker>
             {errorCarModel === true && (
               <Spacer position="left" size="large">
                 <Text variant="error">Please select car model</Text>
@@ -205,14 +214,16 @@ export const MyCarScreen = ({ navigation, route }) => {
               value={fuelType}
               onChangeText={(value) => setfuelType(value)}
             /> */}
-             <Text variant="label" >Fuel Type</Text>
-             <SegmentedControl
-                values={['Diesel', 'Petrol']}
-                selectedIndex={fuelTypeIndex}
-                onValueChange={(value) => {
-                  setfuelTypeIndex(value);
-                }}
-              />
+            <Text variant="label">Fuel Type</Text>
+            <SegmentedControl
+              tintColor="#000000"
+              backgroundColor="#FFFFFF"
+              values={["Diesel", "Petrol"]}
+              selectedIndex={fuelTypeIndex}
+              onValueChange={(value) => {
+                setfuelTypeIndex(value);
+              }}
+            />
             {errorFuelType === true && (
               <Spacer position="left" size="large">
                 <Text variant="error">Please select fuel type</Text>

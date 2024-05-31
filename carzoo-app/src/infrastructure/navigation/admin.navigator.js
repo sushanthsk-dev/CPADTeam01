@@ -16,8 +16,10 @@ const AdminStack = createStackNavigator();
 export const AdminNavigator = () => {
   return (
     <AdminStack.Navigator
-      headerMode="none"
-      screenOptions={{ ...TransitionPresets.ScaleFromCenterAndroid }}
+      screenOptions={{
+        headerMode: false,
+        ...TransitionPresets.ScaleFromCenterAndroid,
+      }}
     >
       <AdminStack.Screen name="AdminScreen" component={AdminScreen} />
 

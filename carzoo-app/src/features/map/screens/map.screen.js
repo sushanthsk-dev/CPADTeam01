@@ -296,7 +296,7 @@ const MechanicMap = ({ navigation }) => {
                   <Text variant="checkoutTitle">{currentMechanic.name}</Text>
                 </Spacer>
                 <Spacer>
-                  <Text>Moodbidri</Text>
+                  <Text>{currentMechanic.workAssignedLocation}</Text>
                 </Spacer>
                 <Spacer>
                   <CallButton

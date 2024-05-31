@@ -46,7 +46,7 @@ export const AddressScreen = ({ navigation }) => {
     defaultValues: {
       address: address ? address.address : "",
       city: address ? address.city : "",
-      pincode: address ? address.pincode : "574227",
+      pincode: address ? address.pincode : "560067",
       state: address ? address.state : "",
       phoneno: address
         ? address.phoneno.toString()

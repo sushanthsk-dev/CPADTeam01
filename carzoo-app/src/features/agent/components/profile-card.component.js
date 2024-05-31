@@ -32,7 +32,7 @@ export const ProfileCard = ({ name }) => {
         <SpacerView>
           <Text variant="subTitle">Rohith Sharma</Text>
           <Spacer>
-            <Text variant="caption">Moodbidri</Text>
+            <Text variant="caption">Whitefield</Text>
           </Spacer>
         </SpacerView>
         <Text>{name}</Text>

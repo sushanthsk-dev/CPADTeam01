@@ -17,7 +17,6 @@ import { NoInternetErrorScreen } from "../../gps-map-error/no-internet-connectio
 const Tab = createMaterialTopTabNavigator();
 
 const OrderContainer = styled.View`
-  margin-top: 54px;
   flex: 1;
 `;
 
@@ -94,7 +93,7 @@ export const AgentOrderListScreen = ({ navigation, name }) => {
   }, []);
 
   console.log("LOD", isLoading);
-  const onGoingOrders = () => {
+  const OnGoingOrders = () => {
     return !isLoading ? (
       <>
         <CardContainer>
@@ -121,14 +120,14 @@ export const AgentOrderListScreen = ({ navigation, name }) => {
                   </TouchableOpacity>
                 )
             )}
-          <NoOrderContainer />
+          {/* <NoOrderContainer  /> */}
         </CardContainer>
       </>
     ) : (
       <LoadingDiv />
     );
   };
-  const completedOrders = () => {
+  const CompletedOrders = () => {
     return !isLoading ? (
       agentAssignedOrderList.length > 0 && (
         <CardContainer>
@@ -170,12 +169,12 @@ export const AgentOrderListScreen = ({ navigation, name }) => {
       <OrderContainer>
         <Tab.Navigator>
           <Tab.Screen
-            name="OngoingOrders"
+            name="OnGoingOrders"
             options={({ route }) => ({
               headerShown: false,
               tabBarLabel: "Ongoing Orders",
             })}
-            component={onGoingOrders}
+            component={OnGoingOrders}
           />
           <Tab.Screen
             name="CompletedOrders"
@@ -183,7 +182,7 @@ export const AgentOrderListScreen = ({ navigation, name }) => {
               headerShown: false,
               tabBarLabel: "Completed Orders",
             })}
-            component={completedOrders}
+            component={CompletedOrders}
           />
         </Tab.Navigator>
       </OrderContainer>
