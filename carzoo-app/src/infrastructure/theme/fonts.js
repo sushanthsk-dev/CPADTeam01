@@ -1,6 +1,6 @@
 export const fonts = {
-  body: "Montserrat_400Regular",
-  heading: "Lato_400Regular",
+  body: "SpaceMono",
+  heading: "SpaceMono",
 };
 
 export const fontWeights = {
