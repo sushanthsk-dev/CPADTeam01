@@ -1,0 +1,26 @@
+_schema-version: "3.3"
+ID: Carzoo
+description: Carzoo Backend.
+version: 1.0.0
+parameters:
+  keep-existing-routes: true
+  appname: carzoo-${space}
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm cache clean --force
+    - npm install --verbose
+modules:
+- name: carzoo-srv
+  type: nodejs
+  path: .
+  parameters:
+    disk-quota: 1024M
+    memory: 1024M
+    idle-routes:
+      - route:  https://${space}-srv-idle.${default-domain}
+    routes:
+      - route:  https://${space}-srv.${default-domain}
+  build-parameters:
+    builder: npm-ci

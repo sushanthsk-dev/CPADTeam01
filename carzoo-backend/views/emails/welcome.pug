@@ -1,0 +1,14 @@
+extends baseEmail
+block content
+    p Hi #{firstName},
+    p Welcome to Carzoo fam🎉
+    p An account has been successfully created for you in carzoo 
+    br
+    br
+    p Your Login details: 
+    div
+        center
+            h3 Email address : #{email} <br> Password : #{tempCode}
+    p Please login to carzoo application using the above login credentials.
+    p Your password will expire in 24 hours If you don't login.
+    p - Carzoo, Whitefield
